@@ -1,0 +1,102 @@
+[
+	{
+		"id": 1,
+		"title": "Arroz",
+		"description": "alimento no perecedero",
+		"code": "ABC123",
+		"price": 20,
+		"status": true,
+		"stock": 10,
+		"category": "alimento"
+	},
+	{
+		"id": 2,
+		"title": "Fideo",
+		"description": "alimento no perecedero",
+		"code": "ABC124",
+		"price": 55,
+		"status": true,
+		"stock": 10,
+		"category": "alimento"
+	},
+	{
+		"id": 3,
+		"title": "Harina",
+		"description": "harina 0000 de trigo",
+		"code": "ABC125",
+		"price": 60,
+		"status": true,
+		"stock": 50,
+		"category": "alimento"
+	},
+	{
+		"id": 4,
+		"title": "Leche",
+		"description": "leche larga vida",
+		"code": "ABC126",
+		"price": 120,
+		"status": true,
+		"stock": 20,
+		"category": "alimento"
+	},
+	{
+		"id": 5,
+		"title": "Vino",
+		"description": "vino tinto",
+		"code": "ABC127",
+		"price": 100,
+		"status": true,
+		"stock": 10,
+		"category": "alimento"
+	},
+	{
+		"id": 6,
+		"title": "Pure de tomate",
+		"description": "sin descripcion",
+		"code": "ABC128",
+		"price": 25,
+		"status": true,
+		"stock": 5,
+		"category": "alimento"
+	},
+	{
+		"id": 7,
+		"title": "Agua",
+		"description": "bebida mineral",
+		"code": "ABC129",
+		"price": 80,
+		"status": true,
+		"stock": 10,
+		"category": "alimento"
+	},
+	{
+		"id": 8,
+		"title": "Aceite",
+		"description": "aceite de girasol",
+		"code": "ABC131",
+		"price": 100,
+		"status": true,
+		"stock": 7,
+		"category": "alimento"
+	},
+	{
+		"id": 9,
+		"title": "Detergente",
+		"description": "sin descripcion",
+		"code": "ABC132",
+		"price": 67,
+		"status": true,
+		"stock": 4,
+		"category": "alimento"
+	},
+	{
+		"id": 10,
+		"title": "Sprite",
+		"description": "bebida con gas",
+		"code": "ABC133",
+		"price": 90,
+		"status": true,
+		"stock": 10,
+		"category": "alimento"
+	}
+]
