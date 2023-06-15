@@ -36,9 +36,13 @@ export class CartManager {
   }
 
   deleteCartById = async (id) => {
+    if (existsSync(this.path)) {
     const carts = await this.getCarts();
     let filterCart = carts.filter(c => c.id !== id)
     await promises.writeFile(this.path, JSON.stringify([...filterCart], null, '\t'));
+    return 'Carrito eliminado';
+    }
+    return 'No existe el carrito con ese id'
   }
 
   addProductToCart = async (idCart, productId) => {

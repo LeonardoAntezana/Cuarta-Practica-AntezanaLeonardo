@@ -55,7 +55,7 @@ export class ProductManager {
   updateProduct = async (idProd, newProduct) => {
     const products = await this.getProducts();
     let indexProduct = products.findIndex(prod => prod.id === idProd);
-    products[indexProduct] = {id: products[indexProduct].id, ...newProduct};
+    products[indexProduct] = {...products[indexProduct], ...newProduct};
     await promises.writeFile(this.path, JSON.stringify([...products], null, '\t'))
     return 'Producto actualizado con exito'
   }
@@ -68,7 +68,7 @@ export class ProductManager {
       await promises.writeFile(this.path, JSON.stringify(filterProducts, null, '\t'));
       return 'Producto eliminado!'
     }
-    return ('El producto a eliminar no existe!')
+    return 'El producto a eliminar no existe!';
   }
   
 }
