@@ -1,0 +1,10 @@
+<div class='container__products'>
+  {{#each products}}
+    <div class="product {{this.code}}">
+      <h3>{{this.title}}</h3>
+      <p>{{this.description}}</p>
+    </div>
+  {{/each}}
+</div>
+<script src='socket.io/socket.io.js'></script>
+<script src='js/index.js'></script>
