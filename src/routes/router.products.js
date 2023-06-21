@@ -1,5 +1,6 @@
 import { Router } from "express";
 import { manager1 } from "../app.js";
+import { socketServer } from "../app.js";
 
 const router = Router();
 
@@ -31,6 +32,7 @@ router.post('/', async (req, res) => {
     return res.send({ error: 'campos incompletos' })
   }
   const statusRes = await manager1.addProduct(title, description, code, price, status, stock, category)
+  if(statusRes === 'Producto agregado!') socketServer.emit('addProduct', {title, description, code, price, status, stock, category})
   return res.send({ status: statusRes });
 })
 
@@ -45,7 +47,11 @@ router.put('/:pid', async (req, res) => {
 // DELETE PRODUCT
 router.delete('/:pid', async (req, res) => {
   const pid = Number(req.params.pid);
+  const product = await manager1.getProductById(pid);
   const resDelete = await manager1.deleteProduct(pid);
+  if(resDelete === 'Producto eliminado!'){
+    socketServer.emit('deleteProduct', product.code)
+  } 
   res.send({status: resDelete});
 })
 
