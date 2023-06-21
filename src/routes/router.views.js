@@ -7,6 +7,7 @@ const router = Router();
 router.get('/', async (req, res) => {
   const products = await manager1.getProducts();
   res.render('home', {
+    style: 'realTimeProducts.css',
     products
   });
 })
