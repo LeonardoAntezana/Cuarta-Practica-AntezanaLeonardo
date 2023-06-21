@@ -1,8 +1,11 @@
-<div>
+<div class='container__products'>
   {{#each products}}
-    <div>
+    <div class="product">
       <h3>{{this.title}}</h3>
       <p>{{this.description}}</p>
+      <p>{{this.category}}</p>
+      <p>{{this.price}}</p>
+      <p>{{this.stock}}</p>
     </div>
   {{/each}}
 </div>
