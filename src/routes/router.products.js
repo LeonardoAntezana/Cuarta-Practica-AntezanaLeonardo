@@ -31,8 +31,13 @@ router.post('/', async (req, res) => {
   if (!title || !description || !code || !price || !status || !stock || !category) {
     return res.send({ error: 'campos incompletos' })
   }
+  else if (typeof (title) !== 'string' || typeof (description) !== 'string' ||
+    typeof (code) !== 'string' || typeof (price) !== 'number' || typeof (status) !== 'boolean' ||
+    typeof (stock) !== 'number' || typeof (category) !== 'string') {
+      return res.send({error: 'Por favor ingrese los datos de los campos correctamente'});
+  }
   const statusRes = await manager1.addProduct(title, description, code, price, status, stock, category)
-  if(statusRes === 'Producto agregado!') socketServer.emit('addProduct', {title, description, code, price, status, stock, category})
+  if (statusRes === 'Producto agregado!') socketServer.emit('addProduct', { title, description, code, price, status, stock, category })
   return res.send({ status: statusRes });
 })
 
@@ -41,7 +46,7 @@ router.put('/:pid', async (req, res) => {
   const { pid } = req.params;
   const { id, ...rest } = req.body;
   let resUpdateProduct = await manager1.updateProduct(Number(pid), rest);
-  res.send({status: resUpdateProduct});
+  res.send({ status: resUpdateProduct });
 })
 
 // DELETE PRODUCT
@@ -49,10 +54,10 @@ router.delete('/:pid', async (req, res) => {
   const pid = Number(req.params.pid);
   const product = await manager1.getProductById(pid);
   const resDelete = await manager1.deleteProduct(pid);
-  if(resDelete === 'Producto eliminado!'){
+  if (resDelete === 'Producto eliminado!') {
     socketServer.emit('deleteProduct', product.code)
-  } 
-  res.send({status: resDelete});
+  }
+  res.send({ status: resDelete });
 })
 
 export default router;
