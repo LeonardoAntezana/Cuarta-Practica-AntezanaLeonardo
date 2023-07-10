@@ -5,22 +5,26 @@ export default class Carts {
   constructor() { }
 
   getAll = async () => {
-    let carts = await cartModel.find();
+    let carts = await cartModel.find().lean();;
     return carts;
   }
 
   createCart = async () => {
-    let responseCreate = await cartModel.create({ products: [] })
-    return responseCreate;
+    await cartModel.create({ products: [] })
+    return 'Nuevo carrito creado';
   }
 
   getOneCart = async (id) => {
-    let responseFind = await cartModel.findOne({ _id: id })
-    return responseFind;
+    try {
+      let responseFind = await cartModel.findOne({ _id: id })
+      return responseFind;
+    } catch (error) {
+      return error.name;
+    }
   }
 
   addProductToCart = async (id, productId) => {
-    let existProductInCart = await cartModel.find({
+    let existProductInCart = await cartModel.findOne({
       _id: id, products: {
         $elemMatch: { product: productId }
       }
@@ -29,10 +33,10 @@ export default class Carts {
       await cartModel.updateOne({ _id: id, "products.product": productId }, {
         $inc: { "products.$.quantity": 1 }
       })
-      return 'producto agregado!'
+      return 'Se ha agregado una unidad mas del producto!'
     }
     await cartModel.updateOne({ _id: id }, { $addToSet: { products: { product: productId, quantity: 1 } } });
-    return 'Se ha agregado una unidad mas del producto';
+    return 'Producto agregado';
   }
 
 }
