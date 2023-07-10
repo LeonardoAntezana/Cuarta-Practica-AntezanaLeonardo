@@ -5,7 +5,10 @@ const productsCollection = 'products';
 const productSchema = mongoose.Schema({
   title: String,
   description: String,
-  code: String,
+  code: {
+    type: String,
+    unique: true,
+  },
   price: Number,
   status: Boolean,
   stock: Number,

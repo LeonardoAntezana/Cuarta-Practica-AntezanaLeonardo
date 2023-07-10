@@ -6,8 +6,12 @@ const messageSchema = mongoose.Schema({
   user: {
     type: String,
     unique: true,
+    required: true,
   },
-  message: String,
+  message: {
+    type: String,
+    required: true,
+  }
 })
 
 export const messageModel = mongoose.model(messageCollection, messageSchema);
