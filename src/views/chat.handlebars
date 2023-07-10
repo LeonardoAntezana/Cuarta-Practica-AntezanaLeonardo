@@ -1,0 +1,17 @@
+<div>
+  <div class="info__user">
+    <input id="input__user" type="text" maxlength="15" placeholder="choose username">
+    <input id="input__message" type="text">
+  </div>
+  <div class="container__messages">
+    {{#each messages}}
+      <div>
+        <span>{{this.user}}:</span>
+        <span>{{this.message}}</span>
+      </div>
+    {{/each}}
+  </div>
+</div>
+
+<script src='socket.io/socket.io.js'></script>
+<script src='js/chat.js'></script>
