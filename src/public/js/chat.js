@@ -1,15 +1,23 @@
 const socket = io();
 
-let user;
-let input = document.querySelector('#input__user');
+let userName = document.querySelector('#userName');
 let message = document.querySelector('#input__message');
 let containerMessages = document.querySelector('.container__messages');
 
-input.addEventListener('keyup', event => {
-  if (event.key === 'Enter' && input.value.trim()) {
-    user = input.value;
-    input.remove();
-  }
+let user;
+let expresion = /^(([^<>()\[\]\\.,;:\s@”]+(\.[^<>()\[\]\\.,;:\s@”]+)*)|(“.+”))@((\[[0–9]{1,3}\.[0–9]{1,3}\.[0–9]{1,3}\.[0–9]{1,3}])|(([a-zA-Z\-0–9]+\.)+[a-zA-Z]{2,}))$/
+
+Swal.fire({
+  title: 'Escriba su email',
+  input: 'text',
+  inputValidator: (value) => {
+    if(!value.trim()) return 'campo incompleto';
+    else if(!expresion.test(value)) return 'ingrese un email valido';
+    user = value;
+    userName.innerText = user;
+  },
+  showConfirmButton: false,
+  allowOutsideClick: false,
 })
 
 message.addEventListener('keyup', event => {
