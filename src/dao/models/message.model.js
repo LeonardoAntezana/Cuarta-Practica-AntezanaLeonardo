@@ -5,7 +5,6 @@ const messageCollection = 'messages';
 const messageSchema = mongoose.Schema({
   user: {
     type: String,
-    unique: true,
     required: true,
   },
   message: {
