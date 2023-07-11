@@ -47,8 +47,8 @@ app.use('/api/carts/', cartRouter)
 socketServer.on('connection', async (socket) => {
 
   socket.on('sendMessage', async (data) => {
-    let res = await messagesManager.addMessage(data);
-    if(res.code !== 11000) socketServer.emit('newMessage', data);
+    await messagesManager.addMessage(data);
+    socketServer.emit('newMessage', data);
   })
 
 })
