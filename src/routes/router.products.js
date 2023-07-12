@@ -64,8 +64,7 @@ router.delete('/:pid', async (req, res) => {
   // const product = await manager1.getProductById(pid);
   // const resDelete = await manager1.deleteProduct(pid);
   let productFind = await productsDbManager.findProduct(pid);
-  if (productFind.length === 0) return res.send({ status: 'no se encontro ningun producto' })
-  if(productFind === 'CastError') return res.send({ error: 'No se ingreso un id correcto' });
+  if(productFind === 'CastError' || !productFind) return res.send({ error: 'No se ingreso un id correcto' });
   await productsDbManager.deleteProduct(pid);
   socketServer.emit('deleteProduct', productFind.code)  
   res.send({ status: 'Producto eliminado!' })
