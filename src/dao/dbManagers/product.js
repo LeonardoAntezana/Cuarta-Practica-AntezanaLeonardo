@@ -9,9 +9,19 @@ export default class Products {
     return products;
   }
 
+  getAllPaginate = async (limit, page, field, sort, query) => {
+    let sortVerify = sort && { sort: { [field]: sort } }
+    try {
+      let products = await productModel.paginate(query, { ...sortVerify, limit, page, lean: true })
+      return products;
+    } catch(TypeError){
+      return 'Invalid value sort'
+    } 
+  }
+
   findProduct = async (id) => {
     try {
-      let prod = await productModel.find({ _id: id });
+      let prod = await productModel.find({ _id: id }).lean();
       return prod;
     } catch (error) {
       return error.name;
