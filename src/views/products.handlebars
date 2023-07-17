@@ -1,0 +1,17 @@
+<div>
+  <div>
+    {{#if response.hasPrevPage}}
+    <a href="/products?page={{response.prevPage}}">Pagina anterior</a>
+    {{/if}}
+    {{#if response.hasNextPage}}
+    <a href="/products?page={{response.nextPage}}">Pagina siguiente</a>
+    {{/if}}
+  </div>
+  {{#each response.products}}
+    <div>
+      <span>{{this.title}}</span>
+      <span>${{this.price}}</span>
+      <button>agregar al carrito</button>
+    </div>
+  {{/each}}
+</div>
