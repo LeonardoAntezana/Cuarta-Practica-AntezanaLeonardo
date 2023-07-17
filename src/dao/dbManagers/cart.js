@@ -5,7 +5,7 @@ export default class Carts {
   constructor() { }
 
   getAll = async () => {
-    let carts = await cartModel.find().lean();;
+    let carts = await cartModel.find().lean();
     return carts;
   }
 
@@ -16,11 +16,16 @@ export default class Carts {
 
   getOneCart = async (id) => {
     try {
-      let responseFind = await cartModel.findOne({ _id: id })
+      let responseFind = await cartModel.findOne({ _id: id }).populate('products.product').lean()
       return responseFind;
     } catch (error) {
       return error.name;
     }
+  }
+
+  deleteAllProductsToCart = async (cid) => {
+    let { matchedCount } = await cartModel.updateOne({ _id: cid }, { $set: { products: [] } });
+    return matchedCount === 0 ? 'No se encontro el carrito' : 'Productos eliminados';
   }
 
   addProductToCart = async (id, productId) => {
@@ -37,6 +42,26 @@ export default class Carts {
     }
     await cartModel.updateOne({ _id: id }, { $addToSet: { products: { product: productId, quantity: 1 } } });
     return 'Producto agregado';
+  }
+
+  deleteProductToCart = async (cid, productId) => {
+    let { modifiedCount } = await cartModel.updateOne({ _id: cid }, { $pull: { products: { product: productId } } });
+    return modifiedCount === 0 ? 'No se ha encontrado el producto en el carrito' : 'Producto eliminado del carrito';
+  }
+
+  updateQuantityProduct = async (cid, productId, newQuantity) => {
+    let existProductInCart = await cartModel.findOne({
+      _id: cid, products: {
+        $elemMatch: { product: productId }
+      }
+    });
+    if(existProductInCart){
+      await cartModel.updateOne({ _id: cid , "products.product": productId}, {
+        $set: { "products.$.quantity": newQuantity }
+      });
+      return 'Se ha modificado el producto exitosamente';
+    }
+    return 'No se encontro el producto en el carrito';
   }
 
 }

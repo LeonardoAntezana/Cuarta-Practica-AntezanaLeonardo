@@ -1,6 +1,4 @@
 import { Router } from "express";
-// import { manager1 } from "../app.js";
-// import { cartManager1 } from "../app.js";
 import { cartsDbManager } from "../app.js";
 import { productsDbManager } from "../app.js";
 
@@ -14,7 +12,6 @@ router.get('/', async (req, res) => {
 
 // CREAR CARRITO
 router.post('/', async (req, res) => {
-  // const resCart = await cartManager1.createCart();
   let resCart = await cartsDbManager.createCart();
   res.send({ status: resCart });
 })
@@ -24,16 +21,19 @@ router.get('/:cid', async (req, res) => {
   const { cid } = req.params;
   let resCartSearch = await cartsDbManager.getOneCart(cid);
   if (resCartSearch === 'CastError' || !resCartSearch) return res.send({ status: 'No se ha encontrado ningun carrito con ese id' })
-  // const cartSearch = await cartManager1.getCartById(Number(cid));
-  // if (!cartSearch) return res.send({ status: 'No existe carrito con ese id' });
   res.send({ productsCart: resCartSearch.products })
+})
+
+// ELIMINAR PRODUCTOS DEL CARRITO
+router.delete('/:cid', async (req, res) => {
+  const { cid } = req.params;
+  let response = await cartsDbManager.deleteAllProductsToCart(cid);
+  res.send({ status: response })
 })
 
 // AGREGAR UN PRODUCTO ESPECIFICO A UN CARRITO ESPECIFICO
 router.post('/:cid/products/:pid', async (req, res) => {
   const { cid, pid } = req.params;
-  // let cartExist = await cartManager1.getCartById(Number(cid));
-  // let productExist = await manager1.getProductById(Number(pid));
   let cartSearch = await cartsDbManager.getOneCart(cid);
   let productSearch = await productsDbManager.findProduct(pid);
   if (!cartSearch || cartSearch === 'CastError') {
@@ -42,9 +42,31 @@ router.post('/:cid/products/:pid', async (req, res) => {
   else if (productSearch.length === 0 || productSearch === 'CastError') {
     return res.send({ status: 'Producto inexistente' })
   }
-  // let resAddProduct = await cartManager1.addProductToCart(cartExist.id, productExist.id);
   let resAddProduct = await cartsDbManager.addProductToCart(cid, pid);
   res.send({ status: resAddProduct })
+})
+
+// SETEAR NUEVA QUANTITY DE UN PRODUCTO DEL CARRITO
+router.put('/:cid/products/:pid', async (req, res) => {
+  const { cid, pid } = req.params;
+  let { quantity } = req.body;
+  let response = await cartsDbManager.updateQuantityProduct(cid, pid, Number(quantity));
+  res.send({ status: response })
+})
+
+// ELIMINAR UN PRODUCTO DE UN CARRITO
+router.delete('/:cid/products/:pid', async (req, res) => {
+  const { cid, pid } = req.params;
+  let cartSearch = await cartsDbManager.getOneCart(cid);
+  let productSearch = await productsDbManager.findProduct(pid);
+  if (!cartSearch || cartSearch === 'CastError') {
+    return res.send({ status: 'Carrito inexistente' });
+  }
+  else if (productSearch.length === 0 || productSearch === 'CastError') {
+    return res.send({ status: 'Producto inexistente' })
+  }
+  let resDeleteProduct = await cartsDbManager.deleteProductToCart(cid, pid);
+  res.send({ status: resDeleteProduct })
 })
 
 export default router;
