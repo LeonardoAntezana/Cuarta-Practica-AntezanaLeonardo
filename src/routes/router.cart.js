@@ -19,9 +19,28 @@ router.post('/', async (req, res) => {
 // TRAER PRODUCTOS DE UN CARRITO ESPECIFICO
 router.get('/:cid', async (req, res) => {
   const { cid } = req.params;
-  let resCartSearch = await cartsDbManager.getOneCart(cid);
+  let resCartSearch = await cartsDbManager.getOneCart(cid); 
+  console.log(resCartSearch)
   if (resCartSearch === 'CastError' || !resCartSearch) return res.send({ status: 'No se ha encontrado ningun carrito con ese id' })
   res.send({ productsCart: resCartSearch.products })
+})
+
+// SETEAR PRODUCTS DE CARRITO CON NUEVO ARRAY
+router.put('/:cid', async (req, res) => {
+  let { cid } = req.params;
+  let newArray = req.body;
+  let resCartSearch = await cartsDbManager.getOneCart(cid);
+  if (resCartSearch === 'CastError' || !resCartSearch) return res.send({ status: 'No se ha encontrado ningun carrito con ese id' }) 
+  for (const prod of newArray) {
+    if(!prod.hasOwnProperty('product') || !prod.hasOwnProperty('quantity') || typeof(prod.quantity) !== "number"){
+      return res.send({ status: 'Campos de producto incorrectos' });
+    }
+    let existProduct = await productsDbManager.findProduct(prod.product);
+    
+    if(existProduct.length === 0) return res.send({ status: 'Producto inexistente' })
+  }
+  await cartsDbManager.setProductsToCart(cid, newArray);
+  res.send({ status: 'Carrito modificado exitosamente' });
 })
 
 // ELIMINAR PRODUCTOS DEL CARRITO

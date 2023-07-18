@@ -64,4 +64,8 @@ export default class Carts {
     return 'No se encontro el producto en el carrito';
   }
 
+  setProductsToCart = async (cid, arrayProducts) => {
+    await cartModel.updateOne({ _id: cid }, { $set: { products: arrayProducts } })
+  }
+
 }
