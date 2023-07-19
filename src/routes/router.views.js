@@ -2,7 +2,6 @@ import { Router, query } from "express";
 import { manager1 } from "../app.js";
 import { socketServer } from "../app.js";
 import { messagesManager } from "../app.js";
-import { cartsDbManager } from "../app.js";
 
 const router = Router();
 
@@ -41,11 +40,11 @@ router.get('/realtimeproducts', async (req, res) => {
 
 router.get('/carts/:cid', async (req, res) => {
   let { cid } = req.params;
-  let { products } = await cartsDbManager.getOneCart(cid);
-  if (products){
-    return res.render('detailsCart', { style: 'detailsCart.css', products });
+  let cartProducts = await fetch(`http://localhost:8080/api/carts/${cid}`).then(res => res.json());
+  if (cartProducts.status){
+    return res.send({ status: cartProducts.status })
   }
-  res.send({ status: 'No se encontro nigun carrito' })
+  res.render('detailsCart', { style: 'detailsCart.css', cartProducts });
 })
 
 router.get('/chat', async (req, res) => {

@@ -20,9 +20,8 @@ router.post('/', async (req, res) => {
 router.get('/:cid', async (req, res) => {
   const { cid } = req.params;
   let resCartSearch = await cartsDbManager.getOneCart(cid); 
-  console.log(resCartSearch)
   if (resCartSearch === 'CastError' || !resCartSearch) return res.send({ status: 'No se ha encontrado ningun carrito con ese id' })
-  res.send({ productsCart: resCartSearch.products })
+  res.send({ products: resCartSearch.products })
 })
 
 // SETEAR PRODUCTS DE CARRITO CON NUEVO ARRAY
