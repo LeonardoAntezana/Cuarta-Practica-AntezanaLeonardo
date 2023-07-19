@@ -1,13 +1,13 @@
 <div>
   <div>
     {{#if response.hasPrevPage}}
-    <a href="/products?page={{response.prevPage}}">Pagina anterior</a>
+    <a href={{response.prevLink}}>Pagina anterior</a>
     {{/if}}
     {{#if response.hasNextPage}}
-    <a href="/products?page={{response.nextPage}}">Pagina siguiente</a>
+    <a href={{response.nextLink}}>Pagina siguiente</a>
     {{/if}}
   </div>
-  {{#each response.products}}
+  {{#each response.payload}}
     <div>
       <span>{{this.title}}</span>
       <span>${{this.price}}</span>

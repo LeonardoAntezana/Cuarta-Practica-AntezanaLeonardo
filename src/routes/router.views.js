@@ -1,8 +1,7 @@
-import { Router } from "express";
+import { Router, query } from "express";
 import { manager1 } from "../app.js";
 import { socketServer } from "../app.js";
 import { messagesManager } from "../app.js";
-import { productsDbManager } from "../app.js";
 import { cartsDbManager } from "../app.js";
 
 const router = Router();
@@ -16,11 +15,18 @@ router.get('/', async (req, res) => {
 })
 
 router.get('/products', async (req, res) => {
-  let { page = 1 } = req.query;
-  let { docs: products, hasNextPage, hasPrevPage, prevPage, nextPage } = await productsDbManager.getAllPaginate(10, page);
+  const { limit = 10 , page = 1, sort, category, status } = req.query;
+  let querySort = sort ? `&sort=${sort}` : '';
+  let queryFilter;
+  if (category) queryFilter = { ...queryFilter, category }
+  if (status) queryFilter = { ...queryFilter, status }
+  let response = await fetch(`http://localhost:8080/api/products/?limit=${limit}${querySort}&page=${page}`).then(res => res.json());
+  if(page < 0 || page > response.totalPages || isNaN(page)){
+    return res.send({ status: 'pagina no existente' })
+  }
   res.render('products', {
     style: 'products.css',
-    response: { products, hasNextPage, hasPrevPage, prevPage, nextPage }
+    response
   })
 })
 

@@ -12,6 +12,21 @@ router.get('/', async (req, res) => {
   if (status) query = { ...query, status }
   let { docs, totalPages, page: pages, prevPage, nextPage, hasNextPage, hasPrevPage } = await productsDbManager.getAllPaginate(limit, page, 'price', sort, query);
 
+  let actualUrl = req.url;
+  let newUrl = '/products';
+
+  if(actualUrl.length > 1){
+    if(!actualUrl.includes('page')){
+      newUrl += actualUrl + '&page='
+    }
+    else{   
+      newUrl += actualUrl.slice(1,-1);
+    }
+  }
+  else{
+    newUrl += actualUrl + '?page='
+  }
+
   let response = {
     status: docs ? 'success' : 'error',
     payload: docs,
@@ -21,8 +36,8 @@ router.get('/', async (req, res) => {
     page: pages,
     hasNextPage,
     hasPrevPage,
-    prevLink: prevPage ? `/api/products/?page=${pages - 1}` : null,
-    nextLink: nextPage ? `/api/products/?page=${pages + 1}` : null,
+    prevLink: prevPage ? `${newUrl}${pages - 1}` : null,
+    nextLink: nextPage ? `${newUrl}${pages + 1}` : null,
   }
   res.send(response);
 })
