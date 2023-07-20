@@ -16,10 +16,9 @@ router.get('/', async (req, res) => {
 router.get('/products', async (req, res) => {
   const { limit = 10 , page = 1, sort, category, status } = req.query;
   let querySort = sort ? `&sort=${sort}` : '';
-  let queryFilter;
-  if (category) queryFilter = { ...queryFilter, category }
-  if (status) queryFilter = { ...queryFilter, status }
-  let response = await fetch(`http://localhost:8080/api/products/?limit=${limit}${querySort}&page=${page}`).then(res => res.json());
+  let queryCategory = category ? `&category=${category}` : '';
+  let queryStatus = status ? `&status=${status}` : ''
+  let response = await fetch(`http://localhost:8080/api/products/?limit=${limit}${querySort}${queryCategory}${queryStatus}&page=${page}`).then(res => res.json());
   if(page < 0 || page > response.totalPages || isNaN(page)){
     return res.send({ status: 'pagina no existente' })
   }
