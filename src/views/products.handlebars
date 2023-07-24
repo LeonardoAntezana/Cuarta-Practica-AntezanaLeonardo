@@ -1,4 +1,5 @@
 <div>
+  <h1>Bienvenido, {{user.name}}</h1>
   <div>
     {{#if response.hasPrevPage}}
     <a href={{response.prevLink}}>Pagina anterior</a>
@@ -14,4 +15,6 @@
       <button>agregar al carrito</button>
     </div>
   {{/each}}
+  <button id="logout">Cerrar sesion</button>
+  <script src="/js/products.js"></script>
 </div>
