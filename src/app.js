@@ -1,5 +1,6 @@
 import express from 'express';
 import mongoose from 'mongoose';
+import session from 'express-session';
 import { Server } from 'socket.io';
 import handlebars from 'express-handlebars'
 import __dirname from './utils.js';
@@ -14,11 +15,18 @@ import Carts from './dao/dbManagers/cart.js'
 import productsRouter from './routes/router.products.js'
 import cartRouter from './routes/router.cart.js'
 import viewRouter from './routes/router.views.js'
+import authRouter from './routes/router.auth.js'
 
 const app = express();
 
+// MIDDLEWARES
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
+app.use(session({
+  secret:"Lucy",
+  resave:false,
+  saveUninitialized:false
+}))
 
 const httpServer = app.listen(8080, console.log('Server arriba'))
 export const socketServer = new Server(httpServer);
@@ -34,15 +42,18 @@ app.engine('handlebars', handlebars.engine());
 app.set('views', `${__dirname}/views`)
 app.set('view engine', 'handlebars');
 
+// INSTANCIAS DE MANAGERS
 export const manager1 = new ProductManager('Leonardo', './products.json')
 export const cartManager1 = new CartManager('./carts.json');
 export const messagesManager = new Messages();
 export const productsDbManager = new Products();
 export const cartsDbManager = new Carts();
 
+// ROUTERS
 app.use('/', viewRouter)
 app.use('/api/products/', productsRouter);
 app.use('/api/carts/', cartRouter)
+app.use('/auth/', authRouter)
 
 socketServer.on('connection', async (socket) => {
 
