@@ -24,7 +24,8 @@ router.get('/products', async (req, res) => {
   }
   res.render('products', {
     style: 'products.css',
-    response
+    response,
+    user: req.session.user,
   })
 })
 
@@ -52,6 +53,19 @@ router.get('/chat', async (req, res) => {
     style: 'chat.css',
     messages
   })
+})
+
+// AUTHENTICATION
+router.get('/register', (req, res) => {
+  res.render('register', { style: 'user.css' });
+})
+
+router.get('/login', (req, res) => {
+  res.render('login', { style: 'user.css' })
+})
+
+router.get('/profile', (req, res) => {
+  res.render('profile', { style: 'user.css' })
 })
 
 export default router;
