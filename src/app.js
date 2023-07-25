@@ -1,6 +1,8 @@
 import express from 'express';
 import mongoose from 'mongoose';
+import MongoStore from 'connect-mongo';
 import session from 'express-session';
+import cookieParser from 'cookie-parser';
 import { Server } from 'socket.io';
 import handlebars from 'express-handlebars'
 import __dirname from './utils.js';
@@ -23,20 +25,29 @@ const app = express();
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(session({
-  secret:"Lucy",
-  resave:false,
-  saveUninitialized:false
+  store: MongoStore.create({
+    mongoUrl: 'mongodb+srv://leonardoantezana59:zHXuMizLukj6R75z@ecommerce-coderhouse.sfxkmnu.mongodb.net/?retryWrites=true&w=majority',
+    mongoOptions: { useNewUrlParser: true, useUnifiedTopology: true },
+    ttl: 300
+  }),
+  secret: "Lucy",
+  resave: false,
+  saveUninitialized: false
 }))
+app.use(cookieParser());
 
+// SERVER
 const httpServer = app.listen(8080, console.log('Server arriba'))
 export const socketServer = new Server(httpServer);
 
+// MONGOOSE CONNECTION
 mongoose.connect('mongodb+srv://leonardoantezana59:zHXuMizLukj6R75z@ecommerce-coderhouse.sfxkmnu.mongodb.net/?retryWrites=true&w=majority').                   //CONNECTION DATABASE//
   catch(error => {
     console.log(error)
     process.exit();
   });
 
+// HANDLEBARS
 app.use(express.static(`${__dirname}/public`));
 app.engine('handlebars', handlebars.engine());
 app.set('views', `${__dirname}/views`)
