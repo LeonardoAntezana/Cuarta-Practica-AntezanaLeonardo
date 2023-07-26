@@ -21,12 +21,18 @@ import authRouter from './routes/router.auth.js'
 
 const app = express();
 
+// MONGOOSE CONNECTION
+mongoose.connect(`mongodb+srv://leonardoantezana59:zHXuMizLukj6R75z@ecommerce-coderhouse.sfxkmnu.mongodb.net/?retryWrites=true&w=majority`).catch(error => {
+  console.log(error)
+  process.exit();
+});
+
 // MIDDLEWARES
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(session({
   store: MongoStore.create({
-    mongoUrl: 'mongodb+srv://leonardoantezana59:zHXuMizLukj6R75z@ecommerce-coderhouse.sfxkmnu.mongodb.net/?retryWrites=true&w=majority',
+    mongoUrl: `mongodb+srv://leonardoantezana59:zHXuMizLukj6R75z@ecommerce-coderhouse.sfxkmnu.mongodb.net/?retryWrites=true&w=majority`,
     mongoOptions: { useNewUrlParser: true, useUnifiedTopology: true },
     ttl: 300
   }),
@@ -39,13 +45,6 @@ app.use(cookieParser());
 // SERVER
 const httpServer = app.listen(8080, console.log('Server arriba'))
 export const socketServer = new Server(httpServer);
-
-// MONGOOSE CONNECTION
-mongoose.connect('mongodb+srv://leonardoantezana59:zHXuMizLukj6R75z@ecommerce-coderhouse.sfxkmnu.mongodb.net/?retryWrites=true&w=majority').                   //CONNECTION DATABASE//
-  catch(error => {
-    console.log(error)
-    process.exit();
-  });
 
 // HANDLEBARS
 app.use(express.static(`${__dirname}/public`));
