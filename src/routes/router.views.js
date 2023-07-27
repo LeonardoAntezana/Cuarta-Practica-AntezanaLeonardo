@@ -2,6 +2,7 @@ import { Router } from "express";
 import { manager1 } from "../app.js";
 import { socketServer } from "../app.js";
 import { messagesManager } from "../app.js";
+import { checkAuthorization, checkSession } from "../utils.js";
 
 const router = Router();
 
@@ -14,7 +15,7 @@ router.get('/', async (req, res) => {
   res.redirect('/login');
 })
 
-router.get('/products', async (req, res) => {
+router.get('/products', checkAuthorization, async (req, res) => {
   const { limit = 10 , page = 1, sort, category, status } = req.query;
   let querySort = sort ? `&sort=${sort}` : '';
   let queryCategory = category ? `&category=${category}` : '';
@@ -61,7 +62,7 @@ router.get('/register', (req, res) => {
   res.render('register', { style: 'user.css' });
 })
 
-router.get('/login', (req, res) => {
+router.get('/login', checkSession, (req, res) => {
   res.render('login', { style: 'user.css' })
 })
 
