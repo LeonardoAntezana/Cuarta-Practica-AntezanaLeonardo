@@ -1,0 +1,47 @@
+:root {
+  --color-primary: #4F518C;
+  --color-secondary: #907AD6;
+  --color-green: #264652;
+  --size-sm: 1.4rem;
+  --size-md: 2rem;
+  --size-lg: 3rem;
+}
+
+html {
+  font-size: 67.5%;
+  font-family: 'Quicksand', sans-serif;
+}
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-size: var(--size-md);
+}
+
+button,
+input {
+  border: none;
+  outline: none;
+  padding: 0.5rem;
+  font-size: var(--size-sm);
+}
+
+button, input[type='submit'] {
+  cursor: pointer;
+}
+
+a {
+  color: #fff;
+}
+
+.container {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+.title {
+  text-transform: uppercase;
+  font-size: var(--size-lg);
+}

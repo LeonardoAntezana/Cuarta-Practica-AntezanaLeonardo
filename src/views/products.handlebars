@@ -1,5 +1,5 @@
-<div>
-  <h1>Bienvenido, {{user.name}}</h1>
+<div class="container container__products">
+  <h1 class="title">Bienvenido, {{user.name}}</h1>
   <p>Rol: {{user.rol}}</p>
   <div>
     {{#if response.hasPrevPage}}
@@ -9,13 +9,15 @@
     <a href={{response.nextLink}}>Pagina siguiente</a>
     {{/if}}
   </div>
-  {{#each response.payload}}
-    <div>
-      <span>{{this.title}}</span>
-      <span>${{this.price}}</span>
-      <button>agregar al carrito</button>
+  <div class="container__products">
+    {{#each response.payload}}
+    <div class="product">
+      <span class="name">{{this.title}}</span>
+      <span class="price">${{this.price}}</span>
+      <button class="btn__add">agregar al carrito</button>
     </div>
-  {{/each}}
+    {{/each}}
+  </div>
   <button id="logout">Cerrar sesion</button>
-  <script src="/js/products.js"></script>
 </div>
+<script src="/js/products.js"></script>
