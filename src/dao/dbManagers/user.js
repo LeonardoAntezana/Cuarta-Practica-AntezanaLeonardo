@@ -1,6 +1,6 @@
 import { userModel } from '../models/user.model.js'
 
-export class Users {
+export default class Users {
 
   constructor() { }
 
@@ -11,8 +11,8 @@ export class Users {
 
   createUser = async (newUser) => {
     try {
-      await userModel.create(newUser);
-      return 'User created!'
+      let response = await userModel.create(newUser);
+      return response;
     } catch (error) {
       return error;
     }
