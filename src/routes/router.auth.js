@@ -1,12 +1,11 @@
 import { Router } from "express";
 import passport from "passport";
-import { userDbManager as userManager } from "../app.js";
-import { generateHash, isValidPassword, sendError, sendPayload } from "../utils.js";
+import { sendPayload, sendError } from "../utils.js";
 
 const router = Router();
 
 // PASSPORT 
-router.get('/github', passport.authenticate('github', { scope: ['user: email'] }), (req, res) => {})
+router.get('/github', passport.authenticate('github', { scope: ['user: email'] }), (req, res) => { })
 
 // CALLBACK GITHUB
 router.get('/githubcallback', passport.authenticate('github', { failureRedirect: '/login' }), (req, res) => {
@@ -15,31 +14,20 @@ router.get('/githubcallback', passport.authenticate('github', { failureRedirect:
 })
 
 // REGISTER
-router.post('/register', async (req, res) => {
-  const { first_name, last_name, email, age, password } = req.body;
-  if( !first_name || !last_name || !email || !age || !password ) return sendError(res, 400, 'Campos incompletos');
-  const userExist = await userManager.getOneUser({ email });
-  if (userExist) return sendError(res, 400, 'Usuario ya existente')
-  let auxUser = { first_name, last_name, email, age, password: generateHash(password) }
-  await userManager.createUser(auxUser)
+router.post('/register', passport.authenticate('register', { failureRedirect: '/login' }), async (req, res) => {
   sendPayload(res, 200, 'Usuario registrado');
 })
 
 // LOGIN
-router.post('/login', async (req, res) => {
-  const { email, password } = req.body
-  if(!email || !password) return sendError(res, 400, 'Campos incompletos')
-  if(email === 'adminCoder@coder.com' && password === 'adminCod3r123'){
-    req.session.user = { name: email, rol: 'admin' };
-    return sendPayload(res, 200, 'Admin logeado')
+router.post('/login', passport.authenticate('login', { failureRedirect: '/login' }), async (req, res) => {
+  try {
+    let { first_name, last_name, rol } = req.user;
+    req.session.user = { name: `${first_name} ${last_name || ''}`, rol };
+    if (rol === 'admin') return sendPayload(res, 200, 'Admin logeado')
+    sendPayload(res, 200, 'Usuario logeado')
+  } catch (error) {
+    sendError(res, 400, error);
   }
-  
-  const user = await userManager.getOneUser({ email });
-  
-  if (!user) return sendError(res, 403, 'Usuario no encontrado');
-  if(!isValidPassword(password, user.password)) return sendError(res, 403, 'Credenciales erroneas')
-  req.session.user = { name:`${user.first_name} ${user.last_name}`, rol: 'user' };
-  sendPayload(res, 200, 'Usuario logeado')
 })
 
 // LOG0UT
