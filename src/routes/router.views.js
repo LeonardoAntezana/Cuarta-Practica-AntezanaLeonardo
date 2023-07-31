@@ -60,11 +60,11 @@ router.get('/chat', async (req, res) => {
 
 // AUTHENTICATION
 router.get('/register', (req, res) => {
-  res.render('register', { style: 'user.css' });
+  res.render('register', { style: 'auth.css' });
 })
 
 router.get('/login', checkSession, (req, res) => {
-  res.render('login', { style: 'user.css' })
+  res.render('login', { style: 'auth.css' })
 })
 
 router.get('/profile', (req, res) => {
