@@ -1,9 +1,10 @@
 import { Router } from "express";
-import { manager1 } from "../app.js";
+import { CartManager } from '../dao/fileManagers/CartManager.js'
 import { socketServer } from "../app.js";
 import { messagesManager } from "../app.js";
 import { checkAuthorization, checkSession } from "../utils.js";
 
+const manager1 = new CartManager();
 const router = Router();
 
 router.get('/', async (req, res) => {

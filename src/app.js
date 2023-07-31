@@ -1,18 +1,19 @@
+import 'dotenv/config'
 import express from 'express';
 import mongoose from 'mongoose';
 import MongoStore from 'connect-mongo';
 import session from 'express-session';
 import cookieParser from 'cookie-parser';
+import passport from 'passport';
+import initializePassport from './config/passport.config.js';
 import { Server } from 'socket.io';
 import handlebars from 'express-handlebars'
 import __dirname from './utils.js';
 
-import { ProductManager } from './dao/fileManagers/ProductManager.js';
-import { CartManager } from './dao/fileManagers/CartManager.js';
-
 import Messages from './dao/dbManagers/message.js';
 import Products from './dao/dbManagers/product.js';
 import Carts from './dao/dbManagers/cart.js'
+import Users from './dao/dbManagers/user.js';
 
 import productsRouter from './routes/router.products.js'
 import cartRouter from './routes/router.cart.js'
@@ -30,6 +31,8 @@ mongoose.connect(`mongodb+srv://leonardoantezana59:zHXuMizLukj6R75z@ecommerce-co
 // MIDDLEWARES
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
+initializePassport();
+app.use(passport.initialize());
 app.use(session({
   store: MongoStore.create({
     mongoUrl: `mongodb+srv://leonardoantezana59:zHXuMizLukj6R75z@ecommerce-coderhouse.sfxkmnu.mongodb.net/?retryWrites=true&w=majority`,
@@ -53,17 +56,16 @@ app.set('views', `${__dirname}/views`)
 app.set('view engine', 'handlebars');
 
 // INSTANCIAS DE MANAGERS
-export const manager1 = new ProductManager('Leonardo', './products.json')
-export const cartManager1 = new CartManager('./carts.json');
 export const messagesManager = new Messages();
 export const productsDbManager = new Products();
 export const cartsDbManager = new Carts();
+export const userDbManager = new Users();
 
 // ROUTERS
 app.use('/', viewRouter)
 app.use('/api/products/', productsRouter);
 app.use('/api/carts/', cartRouter)
-app.use('/auth/', authRouter)
+app.use('/api/auth/', authRouter)
 
 socketServer.on('connection', async (socket) => {
 
