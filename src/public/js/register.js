@@ -7,7 +7,7 @@ form.addEventListener('submit', event => {
   const obj = {}
   data.forEach((value, key) => obj[key] = value);
 
-  fetch('/auth/register', {
+  fetch('/api/auth/register', {
     method: 'POST',
     body: JSON.stringify(obj),
     headers: { 'Content-Type': 'application/json' }
