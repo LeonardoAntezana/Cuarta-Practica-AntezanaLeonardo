@@ -4,7 +4,7 @@ import { sendPayload, sendError } from "../utils.js";
 
 const router = Router();
 
-// PASSPORT 
+// PASSPORT GITHUB
 router.get('/github', passport.authenticate('github', { scope: ['user: email'] }), (req, res) => { })
 
 // CALLBACK GITHUB
