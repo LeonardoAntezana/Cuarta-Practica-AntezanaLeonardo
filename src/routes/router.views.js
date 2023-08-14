@@ -2,17 +2,12 @@ import { Router } from "express";
 import { CartManager } from '../dao/fileManagers/CartManager.js'
 import { socketServer } from "../app.js";
 import { messagesManager } from "../app.js";
-import { checkAuthorization, checkSession } from "../utils.js";
+import { checkAuthorization, checkSession, sendError } from "../utils.js";
 
 const manager1 = new CartManager();
 const router = Router();
 
 router.get('/', async (req, res) => {
-  // const products = await manager1.getProducts();
-  // res.render('home', {
-  //   style: 'realTimeProducts.css',
-  //   products
-  // });
   res.redirect('/login');
 })
 
@@ -43,11 +38,13 @@ router.get('/realtimeproducts', async (req, res) => {
 
 router.get('/carts/:cid', async (req, res) => {
   let { cid } = req.params;
-  let cartProducts = await fetch(`http://localhost:8080/api/carts/${cid}`).then(res => res.json());
-  if (cartProducts.status){
-    return res.send({ status: cartProducts.status })
+  try {
+    let cartProducts = await fetch(`http://localhost:8080/api/carts/${cid}`).then(res => res.json());
+    if (cartProducts.status) return res.send({ status: cartProducts.status })
+    res.render('detailsCart', { style: 'detailsCart.css', cartProducts });
+  } catch (error) {
+    return sendError(res, 400, error);
   }
-  res.render('detailsCart', { style: 'detailsCart.css', cartProducts });
 })
 
 router.get('/chat', async (req, res) => {
