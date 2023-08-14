@@ -10,8 +10,8 @@ export default class Carts {
   }
 
   createCart = async () => {
-    await cartModel.create({ products: [] })
-    return 'Nuevo carrito creado';
+    let newCart = await cartModel.create({ products: [] })
+    return newCart;
   }
 
   getOneCart = async (id) => {
