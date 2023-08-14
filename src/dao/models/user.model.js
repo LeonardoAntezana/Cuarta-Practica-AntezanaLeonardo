@@ -9,8 +9,16 @@ const userSchema = Schema({
     type: String,
     unique: true,
   },
-  age: String,
-  password: String
+  age: Number,
+  password: String,
+  cart: {
+    type: Schema.Types.ObjectId,
+    ref: 'Carts',
+  },
+  role: {
+    type: String,
+    default: 'user'
+  }
 })
 
 export const userModel = model(userCollection, userSchema);
