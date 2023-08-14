@@ -1,10 +1,11 @@
 import passport from 'passport';
-import { Strategy } from 'passport-local'
+import { Strategy as LocalStrategy } from 'passport-local'
+import { Strategy as JWTStrategy, ExtractJwt } from 'passport-jwt';
 import GithubStrategy from 'passport-github2';
-import { userDbManager } from '../app.js';
+import { userDbManager, cartsDbManager } from '../app.js';
 import { generateHash, isValidPassword } from '../utils.js'
+import { cookieExtractor } from './passport.utilities.js';
 
-let LocalStrategy = Strategy;
 const initializePassport = () => {
   // GITHUB STRATEGY
   passport.use('github', new GithubStrategy({
@@ -15,17 +16,32 @@ const initializePassport = () => {
     try {
       let user = await userDbManager.getOneUser({ email: profile._json.email })
       if (!user) {
+        let { _id } = await cartsDbManager.createCart();
         let auxUser = {
           first_name: profile._json.name,
           last_name: '',
           email: profile._json.email,
           age: '',
-          password: ''
+          password: '',
+          cart: _id,
         }
         let response = await userDbManager.createUser(auxUser);
         done(null, response);
       }
-      else { done(null, user) }
+      else {
+        done(null, user)
+      }
+    } catch (error) {
+      return done(error);
+    }
+  }))
+  // PASSPORT JWT
+  passport.use('current', new JWTStrategy({
+    jwtFromRequest: ExtractJwt.fromExtractors([cookieExtractor]),
+    secretOrKey: 'Farah',
+  }, async (jwt_payload, done) => {
+    try {
+      return done(null, jwt_payload);
     } catch (error) {
       return done(error);
     }
@@ -38,7 +54,8 @@ const initializePassport = () => {
         if (!first_name || !last_name || !email || !age) return done(null, false);
         let user = await userDbManager.getOneUser({ email: username });
         if (user) return done(null, false);
-        let auxUser = { first_name, last_name, email, age, password: generateHash(password) };
+        let { _id } = await cartsDbManager.createCart();
+        let auxUser = { first_name, last_name, email, age, password: generateHash(password), cart: _id };
         let response = await userDbManager.createUser(auxUser);
         done(null, response)
       } catch (error) {
@@ -50,14 +67,14 @@ const initializePassport = () => {
     { usernameField: 'email' }, async (username, password, done) => {
       try {
         if (username === 'adminCoder@coder.com' && password === 'adminCod3r123') {
-          let adminUser = { first_name: username, rol: 'admin' };
+          let adminUser = { first_name: username, role: 'admin' };
           return done(null, adminUser);
         }
         let user = await userDbManager.getOneUser({ email: username })
-        if (!user) return done(null, false);
-        if (!isValidPassword(password, user.password)) return done(null, false);
-        delete user.password;
-        done(null, { ...user._doc, rol: 'user' });
+        if (!user) return done(null, false, 'No user found');
+        if (!isValidPassword(password, user.password)) return done(null, false, 'Bad password');
+        delete user._doc.password;
+        done(null, user);
       } catch (error) {
         return done(error);
       }
