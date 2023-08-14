@@ -1,6 +1,7 @@
 import { fileURLToPath } from 'url';
 import { dirname } from 'path';
 import { hashSync, genSaltSync, compareSync } from 'bcrypt';
+import jwt from 'jsonwebtoken';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
@@ -28,5 +29,10 @@ export const checkSession = (req, res, next) => {
 export const generateHash = password => hashSync(password, genSaltSync(10));
 
 export const isValidPassword = (password, hashedPassword) => compareSync(password, hashedPassword);
+
+// FUNCIONES Y MIDDLEWARES CON JWT
+const PRIVATE_KEY = 'Farah'
+
+export const generateToken = (user, expiresIn) => jwt.sign(user, PRIVATE_KEY, { expiresIn })
 
 export default __dirname;
