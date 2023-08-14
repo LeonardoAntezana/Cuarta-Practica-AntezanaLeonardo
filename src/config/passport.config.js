@@ -43,7 +43,7 @@ const initializePassport = () => {
     try {
       return done(null, jwt_payload);
     } catch (error) {
-      return done(error);
+      return done(error, false);
     }
   }))
   // PASSPORT - LOCAL - REGISTER
@@ -72,7 +72,7 @@ const initializePassport = () => {
         }
         let user = await userDbManager.getOneUser({ email: username })
         if (!user) return done(null, false, 'No user found');
-        if (!isValidPassword(password, user.password)) return done(null, false, 'Bad password');
+        if (!isValidPassword(password, user.password)) return done(null, false, 'Invalid password');
         delete user._doc.password;
         done(null, user);
       } catch (error) {
