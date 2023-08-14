@@ -43,7 +43,7 @@ app.use(session({
   resave: false,
   saveUninitialized: false
 }))
-app.use(cookieParser());
+app.use(cookieParser('Farah'));
 
 // SERVER
 const httpServer = app.listen(8080, console.log('Server arriba'))
