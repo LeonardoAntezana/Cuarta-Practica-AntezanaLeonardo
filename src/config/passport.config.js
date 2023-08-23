@@ -2,16 +2,19 @@ import passport from 'passport';
 import { Strategy as LocalStrategy } from 'passport-local'
 import { Strategy as JWTStrategy, ExtractJwt } from 'passport-jwt';
 import GithubStrategy from 'passport-github2';
-import { userDbManager, cartsDbManager } from '../app.js';
+import UserService from '../services/user.service.js';
 import { generateHash, isValidPassword } from '../utils.js'
 import { cookieExtractor } from './passport.utilities.js';
+import keys from '../config/config.env.js';
+
+const userDbManager = UserService.getInstance();
 
 const initializePassport = () => {
   // GITHUB STRATEGY
   passport.use('github', new GithubStrategy({
-    clientID: 'Iv1.80c489416ea9869e',
-    clientSecret: '770320c7529c2d72510e34ac0ea6af13435b1990',
-    callbackURL: 'http://localhost:8080/api/auth/githubcallback',
+    clientID: keys.CLIENT_ID,
+    clientSecret: keys.CLIENT_SECRET,
+    callbackURL: keys.CALLBACK_URL,
   }, async (accessToken, refreshToken, profile, done) => {
     try {
       let user = await userDbManager.getOneUser({ email: profile._json.email })
@@ -66,7 +69,7 @@ const initializePassport = () => {
   passport.use('login', new LocalStrategy(
     { usernameField: 'email' }, async (username, password, done) => {
       try {
-        if (username === 'adminCoder@coder.com' && password === 'adminCod3r123') {
+        if (username === keys.ADMIN_EMAIL && password === keys.ADMIN_PASSWORD) {
           let adminUser = { first_name: username, role: 'admin' };
           return done(null, adminUser);
         }
