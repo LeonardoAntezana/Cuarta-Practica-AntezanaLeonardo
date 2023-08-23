@@ -1,10 +1,7 @@
 import { Router } from "express";
-import { CartManager } from '../dao/fileManagers/CartManager.js'
 import { socketServer } from "../app.js";
-import { messagesManager } from "../app.js";
 import { checkAuthorization, checkSession, sendError } from "../utils.js";
 
-const manager1 = new CartManager();
 const router = Router();
 
 router.get('/', async (req, res) => {
@@ -48,7 +45,7 @@ router.get('/carts/:cid', async (req, res) => {
 })
 
 router.get('/chat', async (req, res) => {
-  const messages = await messagesManager.getAll();
+  const messages = await fetch(`http://localhost:8080/api/chat`).then(res => res.json());
   res.render('chat', {
     style: 'chat.css',
     messages
