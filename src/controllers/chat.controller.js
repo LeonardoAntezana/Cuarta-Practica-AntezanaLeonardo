@@ -1,5 +1,5 @@
 import messageService from '../services/message.service.js';
-import { sendError, sendPayload } from '../utils';
+import { sendError, sendPayload } from '../utils.js';
 
 const messageInstance = messageService.getInstance();
 

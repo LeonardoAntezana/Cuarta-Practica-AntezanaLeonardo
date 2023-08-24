@@ -2,15 +2,15 @@
   <h1 class="title">Bienvenido, {{user.name}}</h1>
   <p>Rol: {{user.role}}</p>
   <div>
-    {{#if response.hasPrevPage}}
-    <a href={{response.prevLink}}>Pagina anterior</a>
+    {{#if payload.hasPrevPage}}
+    <a href={{payload.prevLink}}>Pagina anterior</a>
     {{/if}}
-    {{#if response.hasNextPage}}
-    <a href={{response.nextLink}}>Pagina siguiente</a>
+    {{#if payload.hasNextPage}}
+    <a href={{payload.nextLink}}>Pagina siguiente</a>
     {{/if}}
   </div>
   <div class="container__products">
-    {{#each response.payload}}
+    {{#each payload.payload}}
     <div class="product">
       <span class="name">{{this.title}}</span>
       <span class="price">${{this.price}}</span>

@@ -3,11 +3,13 @@ import { Strategy as LocalStrategy } from 'passport-local'
 import { Strategy as JWTStrategy, ExtractJwt } from 'passport-jwt';
 import GithubStrategy from 'passport-github2';
 import UserService from '../services/user.service.js';
+import CartService from '../services/cart.service.js';
 import { generateHash, isValidPassword } from '../utils.js'
 import { cookieExtractor } from './passport.utilities.js';
 import keys from '../config/config.env.js';
 
 const userDbManager = UserService.getInstance();
+const cartsDbManager = CartService.getInstance();
 
 const initializePassport = () => {
   // GITHUB STRATEGY

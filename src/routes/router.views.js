@@ -19,7 +19,7 @@ router.get('/products', checkAuthorization, async (req, res) => {
   }
   res.render('products', {
     style: 'products.css',
-    response,
+    payload: response.payload,
     user: req.session.user,
   })
 })
