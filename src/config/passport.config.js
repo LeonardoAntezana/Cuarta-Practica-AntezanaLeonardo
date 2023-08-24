@@ -85,7 +85,7 @@ const initializePassport = () => {
       }
     }
   ))
-  passport.serializeUser((user, done) => done(null, user._id || 111))
+  passport.serializeUser((user, done) => done(null, user._id || user.role))
 
   passport.deserializeUser(async (id, done) => {
     let user = await userDbManager.getOneUser({ _id: id });
