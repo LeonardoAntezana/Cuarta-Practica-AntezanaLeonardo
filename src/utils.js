@@ -14,8 +14,9 @@ export const sendPayload = (res, statusCode, payload) => res.status(statusCode).
 
 // MIDDLEWARES DE AUTENTICACION
 
-export const checkAuthorization = (req, res, next) => {
+export const checkAuthorization = (roleNotAcepted) => (req, res, next) => {
   if(!req.session.user) return res.redirect('/login');
+  if(req.session.user.role === roleNotAcepted) return res.redirect('back');
   next(); 
 }
 

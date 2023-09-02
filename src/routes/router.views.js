@@ -8,7 +8,7 @@ router.get('/', async (req, res) => {
   res.redirect('/login');
 })
 
-router.get('/products', checkAuthorization, async (req, res) => {
+router.get('/products', checkAuthorization('admin'), async (req, res) => {
   const { limit = 10 , page = 1, sort, category, status } = req.query;
   let querySort = sort ? `&sort=${sort}` : '';
   let queryCategory = category ? `&category=${category}` : '';
@@ -44,7 +44,7 @@ router.get('/carts/:cid', async (req, res) => {
   }
 })
 
-router.get('/chat', async (req, res) => {
+router.get('/chat', checkAuthorization('admin'), async (req, res) => {
   const messages = await fetch(`http://localhost:8080/api/chat`).then(res => res.json());
   res.render('chat', {
     style: 'chat.css',

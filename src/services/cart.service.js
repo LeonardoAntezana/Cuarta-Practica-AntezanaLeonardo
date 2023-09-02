@@ -12,7 +12,7 @@ class CartService {
   }
 
   getAll = async () => {
-    let carts = await cartModel.find().lean();
+    let carts = await cartModel.find().populate('products.product').lean();
     return carts;
   }
 

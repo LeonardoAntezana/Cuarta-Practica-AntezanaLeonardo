@@ -12,6 +12,9 @@ router.post('/', CartController.createCart);
 // TRAER PRODUCTOS DE UN CARRITO ESPECIFICO
 router.get('/:cid', CartController.getOneCart);
 
+// BUY CART
+router.get('/:cid/purchase', CartController.buyCart);
+
 // AGREGAR UN PRODUCTO ESPECIFICO A UN CARRITO ESPECIFICO
 router.post('/:cid/products/:pid', CartController.addProductToCart);
 

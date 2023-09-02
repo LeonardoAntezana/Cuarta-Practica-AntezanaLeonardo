@@ -29,6 +29,17 @@ class CartController {
       : sendError(res, 400, 'Cart not found');
   }
 
+  // BUY CART
+
+  buyCart = async (req, res) => {
+    const { cid } = req.params;
+    const { products } = await cartInstance.getOneCart(cid);
+    if (!products) return sendError(res, 400, 'Cart not found');
+    let productsToBuy = products.filter(prod => prod.product.stock >= prod.quantity);
+    // const response = await cartInstance.buyCart(cid);
+    sendPayload(res, 200, response);
+  }
+
   // DELETE PRODUCTS FROM CART
   deleteAllProductsToCart = async (req, res) => {
     const { cid } = req.params;

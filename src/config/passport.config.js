@@ -6,6 +6,7 @@ import UserService from '../services/user.service.js';
 import CartService from '../services/cart.service.js';
 import { generateHash, isValidPassword } from '../utils.js'
 import { cookieExtractor } from './passport.utilities.js';
+import UserDto from '../dao/dtaos/user.dto.js';
 import keys from '../config/config.env.js';
 
 const userDbManager = UserService.getInstance();
@@ -46,7 +47,7 @@ const initializePassport = () => {
     secretOrKey: 'Farah',
   }, async (jwt_payload, done) => {
     try {
-      return done(null, jwt_payload);
+      return done(null, new UserDto(jwt_payload));
     } catch (error) {
       return done(error, false);
     }
