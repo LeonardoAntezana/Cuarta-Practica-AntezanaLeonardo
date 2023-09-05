@@ -1,5 +1,6 @@
 import { Router } from "express";
 import CartController from "../controllers/cart.controller.js";
+import { checkAuthorization } from "../utils.js";
 
 const router = Router();
 
@@ -13,13 +14,13 @@ router.post('/', CartController.createCart);
 router.get('/:cid', CartController.getOneCart);
 
 // BUY CART
-router.get('/:cid/purchase', CartController.buyCart);
+router.post('/:cid/purchase', CartController.buyCart);
 
 // AGREGAR UN PRODUCTO ESPECIFICO A UN CARRITO ESPECIFICO
-router.post('/:cid/products/:pid', CartController.addProductToCart);
+router.post('/:cid/products/:pid',checkAuthorization('admin'), CartController.addProductToCart);
 
 // ELIMINAR UN PRODUCTO DE UN CARRITO
-router.delete('/:cid/products/:pid', CartController.deleteProductToCart);
+router.delete('/:cid/products/:pid',checkAuthorization('admin'), CartController.deleteProductToCart);
 
 // ELIMINAR PRODUCTOS DEL CARRITO
 router.put('/:cid', CartController.deleteAllProductsToCart);

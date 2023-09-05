@@ -2,15 +2,12 @@ import passport from 'passport';
 import { Strategy as LocalStrategy } from 'passport-local'
 import { Strategy as JWTStrategy, ExtractJwt } from 'passport-jwt';
 import GithubStrategy from 'passport-github2';
-import UserService from '../services/user.service.js';
-import CartService from '../services/cart.service.js';
+import userRepository from '../models/repositories/user.repository.js';
+import cartRepository from '../models/repositories/cart.repository.js';
+import UserDto from '../models/dtaos/user.dto.js'
 import { generateHash, isValidPassword } from '../utils.js'
 import { cookieExtractor } from './passport.utilities.js';
-import UserDto from '../dao/dtaos/user.dto.js';
 import keys from '../config/config.env.js';
-
-const userDbManager = UserService.getInstance();
-const cartsDbManager = CartService.getInstance();
 
 const initializePassport = () => {
   // GITHUB STRATEGY
@@ -20,9 +17,9 @@ const initializePassport = () => {
     callbackURL: keys.CALLBACK_URL,
   }, async (accessToken, refreshToken, profile, done) => {
     try {
-      let user = await userDbManager.getOneUser({ email: profile._json.email })
+      let user = await userRepository.getOneUser({ email: profile._json.email })
       if (!user) {
-        let { _id } = await cartsDbManager.createCart();
+        let { _id } = await cartRepository.createCart();
         let auxUser = {
           first_name: profile._json.name,
           last_name: '',
@@ -30,12 +27,13 @@ const initializePassport = () => {
           age: '',
           password: '',
           cart: _id,
+          role: 'user'
         }
-        let response = await userDbManager.createUser(auxUser);
-        done(null, response);
+        let response = await userRepository.createUser(auxUser);
+        done(null, new UserDto(response));
       }
       else {
-        done(null, user)
+        done(null, new UserDto(user));
       }
     } catch (error) {
       return done(error);
@@ -58,11 +56,11 @@ const initializePassport = () => {
       try {
         let { first_name, last_name, email, age } = req.body;
         if (!first_name || !last_name || !email || !age) return done(null, false);
-        let user = await userDbManager.getOneUser({ email: username });
+        let user = await userRepository.getOneUser({ email: username });
         if (user) return done(null, false);
-        let { _id } = await cartsDbManager.createCart();
+        let { _id } = await cartRepository.createCart();
         let auxUser = { first_name, last_name, email, age, password: generateHash(password), cart: _id };
-        let response = await userDbManager.createUser(auxUser);
+        let response = await userRepository.createUser(auxUser);
         done(null, response)
       } catch (error) {
         return done(error);
@@ -76,7 +74,7 @@ const initializePassport = () => {
           let adminUser = { first_name: username, role: 'admin' };
           return done(null, adminUser);
         }
-        let user = await userDbManager.getOneUser({ email: username })
+        let user = await userRepository.getOneUser({ email: username })
         if (!user) return done(null, false, 'No user found');
         if (!isValidPassword(password, user.password)) return done(null, false, 'Invalid password');
         delete user._doc.password;
@@ -89,7 +87,7 @@ const initializePassport = () => {
   passport.serializeUser((user, done) => done(null, user._id || user.role))
 
   passport.deserializeUser(async (id, done) => {
-    let user = await userDbManager.getOneUser({ _id: id });
+    let user = await userRepository.getOneUser({ _id: id });
     done(null, user);
   })
 

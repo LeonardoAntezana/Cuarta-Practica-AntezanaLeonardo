@@ -2,6 +2,7 @@ import { fileURLToPath } from 'url';
 import { dirname } from 'path';
 import { hashSync, genSaltSync, compareSync } from 'bcrypt';
 import jwt from 'jsonwebtoken';
+import { v4 as uuid } from 'uuid';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
@@ -15,8 +16,7 @@ export const sendPayload = (res, statusCode, payload) => res.status(statusCode).
 // MIDDLEWARES DE AUTENTICACION
 
 export const checkAuthorization = (roleNotAcepted) => (req, res, next) => {
-  if(!req.session.user) return res.redirect('/login');
-  if(req.session.user.role === roleNotAcepted) return res.redirect('back');
+  if(!req.session.user || req.session.user.role === roleNotAcepted) return sendError(res, 403, 'No tienes permisos para realizar esta accion');
   next(); 
 }
 
@@ -24,6 +24,9 @@ export const checkSession = (req, res, next) => {
   if(req.session.user) return res.redirect('/products');
   next();
 }
+
+// FUNCION DE UUID PARA CODE UNICO
+export const generateUUID = () => uuid();
 
 // FUNCIONES DE HASHEO CON BCRYPT
 
