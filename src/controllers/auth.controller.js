@@ -1,10 +1,10 @@
-import { sendPayload, generateToken } from "../utils.js";
+import { sendPayload, sendError, generateToken } from "../utils.js";
 
 class AuthController {
 
   githubCallback = (req, res) => {
-    let { first_name, last_name, role } = req.user;
-    req.session.user = { name: `${first_name} ${last_name || ''}`, role };
+    let { first_name, last_name, role, cart } = req.user;
+    req.session.user = { name: `${first_name} ${last_name || ''}`, role, cart };
     let token = generateToken({ first_name, last_name, role }, '10h');
     res.cookie('authCookie', token, { httpOnly: true });
     res.redirect('/')
@@ -16,9 +16,9 @@ class AuthController {
 
   login = (req, res) => {
     try {
-      let { first_name, last_name, role } = req.user;
-      req.session.user = { name: `${first_name} ${last_name || ''}`, role };
-      let token = generateToken({ first_name, last_name, role }, '10h');
+      let { first_name, last_name, role, cart, email } = req.user;
+      req.session.user = { name: `${first_name} ${last_name || ''}`, role, cart, email };
+      let token = generateToken({ ...req.session.user }, '10h');
       res.cookie('authCookie', token, { httpOnly: true });
       if (role === 'admin') return sendPayload(res, 200, 'Admin logeado')
       sendPayload(res, 200, 'Usuario logeado')
