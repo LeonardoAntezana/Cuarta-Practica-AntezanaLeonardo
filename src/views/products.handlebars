@@ -1,6 +1,6 @@
 <div class="container container__products">
   <h1 class="title">Bienvenido, {{user.name}}</h1>
-  <p>Rol: {{user.role}}</p>
+  <p>Rol: {{user.role}} </p>
   <div>
     {{#if payload.hasPrevPage}}
     <a href={{payload.prevLink}}>Pagina anterior</a>
@@ -14,10 +14,12 @@
     <div class="product">
       <span class="name">{{this.title}}</span>
       <span class="price">${{this.price}}</span>
-      <button class="btn__add">agregar al carrito</button>
+      <button class="btn__add" onclick="buyProduct('{{../user.cart}}','{{this.id}}')">agregar al carrito</button>
     </div>
     {{/each}}
   </div>
+  <button id="buyCart" onclick="buyCart('{{user.cart}}', '{{user.email}}')">Finalizar compra</button>
+  <br><br>
   <button id="logout">Cerrar sesion</button>
 </div>
 <script src="/js/products.js"></script>

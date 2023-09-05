@@ -1,5 +1,6 @@
 import { Router } from "express";
 import productController from "../controllers/product.controller.js";
+import { checkAuthorization } from "../utils.js";
 
 const router = Router();
 
@@ -10,12 +11,12 @@ router.get('/', productController.getAllPaginate);
 router.get('/:pid', productController.findProduct);
 
 // ADD PRODUCT
-router.post('/', productController.addProduct);
+router.post('/', checkAuthorization('user'), productController.addProduct);
 
 // PUT PRODUCT
-router.put('/:pid', productController.updateProduct);
+router.put('/:pid', checkAuthorization('user'), productController.updateProduct);
 
 // DELETE PRODUCT
-router.delete('/:pid', productController.deleteProduct);
+router.delete('/:pid', checkAuthorization('user'), productController.deleteProduct);
 
 export default router;

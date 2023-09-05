@@ -14,8 +14,6 @@ form.addEventListener('submit', async event => {
       headers: { 'Content-Type': 'application/json' }
     })
     if(response.status === 200) { window.location.replace('/products') }
-
-  
   } catch (error) {
     console.log(error);    
   }
