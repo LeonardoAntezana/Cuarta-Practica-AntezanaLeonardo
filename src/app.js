@@ -15,6 +15,7 @@ import cartRouter from './routes/router.cart.js'
 import viewRouter from './routes/router.views.js'
 import authRouter from './routes/router.auth.js'
 import chatRouter from './routes/router.chat.js'
+import mocksRouter from './routes/router.mock.js'
 
 const app = express();
 
@@ -52,6 +53,7 @@ app.set('views', `${__dirname}/views`)
 app.set('view engine', 'handlebars');
 
 // ROUTERS
+app.use('/mockingproducts', mocksRouter)
 app.use('/', viewRouter)
 app.use('/api/products/', productsRouter);
 app.use('/api/carts/', cartRouter)

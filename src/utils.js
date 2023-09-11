@@ -3,6 +3,7 @@ import { dirname } from 'path';
 import { hashSync, genSaltSync, compareSync } from 'bcrypt';
 import jwt from 'jsonwebtoken';
 import { v4 as uuid } from 'uuid';
+import { faker } from '@faker-js/faker/locale/es';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
@@ -38,5 +39,17 @@ export const isValidPassword = (password, hashedPassword) => compareSync(passwor
 const PRIVATE_KEY = 'Farah'
 
 export const generateToken = (user, expiresIn) => jwt.sign(user, PRIVATE_KEY, { expiresIn })
+
+// FUNCIONES DE FAKER
+export const generateProduct = () => ({
+  _id: faker.database.mongodbObjectId(),
+  title: faker.commerce.product(),
+  description: faker.commerce.productDescription(),
+  code: generateUUID(),
+  price: faker.commerce.price(),
+  status: true,
+  stock: Math.floor(faker.commerce.price({max: 100, min: 1})),
+  category: faker.commerce.department(),
+})
 
 export default __dirname;
