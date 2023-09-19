@@ -4,10 +4,12 @@ import { Command } from 'commander';
 const command = new Command();
 
 command
-  .option('-p, --persistance', 'model persistance')
+  .option('-p, --persistance <persistance>', 'model persistance')
+  .option('-e, --environment <environment>', 'environment')
 
 command.parse();
 
-const persistanceModel = command.persistance;
+export const environment = command.opts().environment || 'production';
+const persistanceModel = command.opts().persistance || 'mongo';
 
 export default persistanceModel;
