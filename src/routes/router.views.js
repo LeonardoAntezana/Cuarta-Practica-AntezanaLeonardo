@@ -1,6 +1,6 @@
 import { Router } from "express";
 import { socketServer } from "../app.js";
-import { checkAuthorization, checkSession, sendError } from "../utils.js";
+import { checkAuthorization, checkSession, checkCookie, sendError } from "../utils.js";
 
 const router = Router();
 
@@ -50,6 +50,16 @@ router.get('/chat', checkAuthorization('admin'), async (req, res) => {
     style: 'chat.css',
     messages
   })
+})
+
+// RECUPERACION DE CONTRASEÑA
+
+router.get('/putemail', (req, res) => {
+  res.render('putemail', { style: 'auth.css' })
+})
+
+router.get('/recoverpassword', checkCookie('authRecover', 'Tiempo expirado'), (req, res) => {
+  res.render('recoverpassword', { style: 'auth.css' })
 })
 
 // AUTHENTICATION

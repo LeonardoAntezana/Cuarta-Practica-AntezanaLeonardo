@@ -19,4 +19,23 @@ export default class UserDao {
       return error;
     }
   }
+
+  updatePassWord = async (email, newPassword) => {
+    try {
+      let response = await userModel.updateOne({ email }, { password: newPassword });
+      return response;
+    } catch (error) {
+      return error;
+    }
+  }
+
+  updateRole = async (uid, newRole) => {
+    try {
+      let response = await userModel.updateOne({ _id: uid }, { role: newRole });
+      return response;
+    } catch (error) {
+      return error;
+    }
+  }
+
 }

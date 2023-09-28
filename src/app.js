@@ -16,6 +16,7 @@ import cartRouter from './routes/router.cart.js'
 import viewRouter from './routes/router.views.js'
 import authRouter from './routes/router.auth.js'
 import chatRouter from './routes/router.chat.js'
+import userRouter from './routes/router.user.js'
 import mocksRouter from './routes/router.mock.js'
 import logsRouter from './routes/router.log.js'
 
@@ -63,6 +64,7 @@ app.use('/api/products/', productsRouter);
 app.use('/api/carts/', cartRouter)
 app.use('/api/auth/', authRouter)
 app.use('/api/chat/', chatRouter)
+app.use('/api/user/', userRouter)
 
 // socketServer.on('connection', async (socket) => {
 

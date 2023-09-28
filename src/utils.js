@@ -16,13 +16,18 @@ export const sendPayload = (res, statusCode, payload) => res.status(statusCode).
 
 // MIDDLEWARES DE AUTENTICACION
 
-export const checkAuthorization = (roleNotAcepted) => (req, res, next) => {
-  if(!req.session.user || req.session.user.role === roleNotAcepted) return sendError(res, 403, 'No tienes permisos para realizar esta accion');
+export const checkAuthorization = (rolesNotAcepted = []) => (req, res, next) => {
+  if(!req.session.user || rolesNotAcepted.includes(req.session.user.role)) return sendError(res, 403, 'No tienes permisos para realizar esta accion');
   next(); 
 }
 
 export const checkSession = (req, res, next) => {
   if(req.session.user) return res.redirect('/products');
+  next();
+}
+
+export const checkCookie = (nameCookie, messageError) => (req, res, next) => {
+  if(!req.cookies[nameCookie]) return sendError(res, 403, messageError);
   next();
 }
 
@@ -38,7 +43,7 @@ export const isValidPassword = (password, hashedPassword) => compareSync(passwor
 // FUNCIONES Y MIDDLEWARES CON JWT
 const PRIVATE_KEY = 'Farah'
 
-export const generateToken = (user, expiresIn) => jwt.sign(user, PRIVATE_KEY, { expiresIn })
+export const generateToken = (user, expiresIn) => jwt.sign(user, PRIVATE_KEY, { expiresIn });
 
 // FUNCIONES DE FAKER
 export const generateProduct = () => ({

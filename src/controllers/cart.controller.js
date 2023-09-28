@@ -76,6 +76,7 @@ class CartController {
   // ADD PRODUCT TO CART
   addProductToCart = async (req, res) => {
     const { cid, pid } = req.params;
+    const { email } = req.session.user;
     const cartFind = await cartRepository.getOneCart(cid);
     const prodFind = await productRepository.findProduct(pid);
     if (!cartFind || cartFind === 'CastError') {
@@ -84,6 +85,7 @@ class CartController {
     else if (prodFind.length === 0 || prodFind === 'CastError') {
       return sendError(res, 400, 'Product not found');
     }
+    if(prodFind.owner === email) return sendError(res, 403, "You can't buy this product");
     let responseAddProduct = await cartRepository.addProductToCart(cid, pid);
     sendPayload(res, 200, responseAddProduct);
   }
