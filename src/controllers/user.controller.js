@@ -11,8 +11,9 @@ class UserController {
     let user = await userRepository.getOneUser({ email });
     if (!user) return sendError(res, 400, 'Usuario no encontrado');
     if (isValidPassword(password, user.password)) return sendError(res, 400, 'No se puede colocar la misma contraseña');
-    const response = await userRepository.updatePassWord(email, generateHash(password));
-    sendPayload(res, 200, response);
+    await userRepository.updatePassWord(email, generateHash(password));
+    res.clearCookie('authRecover');
+    sendPayload(res, 200, 'Contraseña actualizada');
   }
 
   updateRole = async (req, res) => {
