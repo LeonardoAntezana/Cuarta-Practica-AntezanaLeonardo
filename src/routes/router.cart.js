@@ -23,10 +23,10 @@ router.post('/:cid/products/:pid',checkAuthorization(['admin']), CartController.
 router.delete('/:cid/products/:pid',checkAuthorization(['admin']), CartController.deleteProductToCart);
 
 // ELIMINAR PRODUCTOS DEL CARRITO
-router.put('/:cid', CartController.deleteAllProductsToCart);
+router.delete('/:cid', CartController.deleteAllProductsToCart);
 
 // SETEAR PRODUCTS DE CARRITO CON NUEVO ARRAY
-router.put(':cid', CartController.setProductsToCart);
+router.put('/:cid', CartController.setProductsToCart);
 
 // SETEAR NUEVA QUANTITY DE UN PRODUCTO DEL CARRITO
 router.put('/:cid/products/:pid', CartController.updateQuantityProduct);

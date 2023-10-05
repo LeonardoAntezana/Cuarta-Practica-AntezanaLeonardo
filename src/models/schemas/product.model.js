@@ -33,7 +33,7 @@ const productSchema = Schema({
     required: true,
   },
   owner: {
-    type: 'string',
+    type: String,
     default: 'admin'
   }
 })

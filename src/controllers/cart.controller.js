@@ -42,8 +42,8 @@ class CartController {
     }
     await cartRepository.setProductsToCart(cid, productsNotBought);
     let amount = productsToBuy.reduce((acc, prod) => acc + prod.product.price * prod.quantity, 0);
-    await ticketRepository.create({ code:generateUUID(), purchase_datetime: new Date(), amount, purchase_user: email });
-    sendPayload(res, 200, 'Compra realizada');
+    let ticketResponse = await ticketRepository.create({ code:generateUUID(), purchase_datetime: new Date(), amount, purchase_user: email });
+    sendPayload(res, 200, ticketResponse);
   }
 
   // DELETE PRODUCTS FROM CART
