@@ -1,0 +1,212 @@
+paths:
+  api/products/:
+    get:
+      summary: Obtiene todos los productos de forma paginada
+      tags:
+        - Products
+      parameters:
+        - in: query
+          name: limit
+          required: false
+          schema:
+            type: number
+          description: número de elementos a devolver
+        - in: query
+          name: page
+          required: false
+          schema:
+            type: number
+          description: número de página a devolver
+        - in: query
+          name: category
+          required: false
+          schema:
+            type: string
+          description: filtrado por categoría de los productos a devolver
+        - in: query
+          name: status
+          required: false
+          schema:
+            type: boolean
+          description: filtrado por estado de los productos a devolver
+        - in: query
+          name: sort
+          required: false
+          schema:
+            type: string
+            enum: 
+              - asc
+              - desc
+          description: ordenamiento de los productos a devolver
+      responses:
+        200:
+          description: Obtiene todos los productos exitosamente
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ResponsePaginate"
+        400:
+          description: Error al obtener los productos
+    post:
+      summary: Crea un producto
+      tags:
+        - Products
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/requestBodies/createProduct"
+      responses:
+        200:
+          description: Crea un producto exitosamente
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Product"
+        400:
+          description: Error al crear el producto, code repetido o campos incompletos
+  
+  api/products/{pid}:
+    get:
+      summary: Obtiene un producto por _id
+      tags:
+        - Products
+      parameters:
+      - name: pid
+        in: path
+        required: true
+        description: _id del producto solicitado
+        schema:
+          type: string
+      responses:
+        200:
+          description: Obtiene un producto exitosamente
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Product"
+        400:
+          description: Error al obtener el producto, _id no válido o inexistente
+    put:
+      summary: Actualiza un producto por _id
+      tags:
+        - Products
+      parameters:
+        - name: pid
+          in: path
+          required: true
+          description: _id del producto a actualizar
+          schema:
+            type: string
+      requestBody:
+        description: campos del producto que se deseen actualizar
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/requestBodies/createProduct"      
+      responses:
+        200:
+          description: Actualiza un producto exitosamente
+        400:
+          description: Error al actualizar el producto
+    delete:
+      summary: Elimina un producto por _id
+      tags:
+        - Products
+      parameters:
+        - name: pid
+          in: path
+          required: true
+          description: _id del producto a eliminar
+      responses:
+        200:
+          description: Elimina un producto exitosamente
+        400:
+          description: Error al eliminar el producto
+
+components:
+  schemas:
+    Product:
+      type: object
+      properties:
+        _id:
+          type: string
+          description: _id autogenerado por mongodb
+        title:
+          type: string
+          description: nombre del producto
+        description:
+          type: string
+          description: descripción del producto
+        code:
+          type: string
+          description: código unico del producto
+        price:
+          type: number
+        status:
+          type: boolean
+          description: estado del producto
+        category:
+          type: string
+          description: categoria del producto
+        owner:
+          type: string
+          description: email del sujeto que crea el producto
+    ResponsePaginate:
+      type: object
+      properties:
+        status:
+          type: string
+          description: estado de la consulta
+        payload:
+          type: array
+          items:
+            $ref: "#/components/schemas/Product"
+        totalPages:
+          type: number
+          description: número de páginas
+        prevPage:
+          type: number
+          description: número de página anterior
+        nextPage:
+          type: number
+          description: número de página siguiente
+        page: 
+          type: number
+          description: número de página actual
+        hasNextPage: 
+          type: boolean
+          description: si hay una página siguiente
+        hasPrevPage: 
+          type: boolean
+          description: si hay una página anterior
+        prevLink: 
+          type: string
+          description: url de la página anterior
+        nextLink:
+          type: string
+          description: url de la página siguiente
+  requestBodies:
+    createProduct:
+      type: object
+      properties:
+        title:
+          type: string
+          description: nombre del producto
+        description:
+          type: string
+          description: descripción del producto
+        code:
+          type: string
+          description: código unico del producto
+        price:
+          type: number
+        status:
+          type: boolean
+          description: estado del producto
+        category:
+          type: string
+          description: categoria del producto
+        owner:
+          type: string
+          description: email del sujeto que crea el producto

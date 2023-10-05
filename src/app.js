@@ -9,6 +9,8 @@ import initializePassport from './config/passport.config.js';
 import { Server } from 'socket.io';
 import handlebars from 'express-handlebars'
 import { addLogger } from './config/winston/logger.winston.js';
+import { serve, setup } from 'swagger-ui-express';
+import specs from './config/swagger/config.swagger.js'
 import __dirname from './utils.js';
 
 import productsRouter from './routes/router.products.js'
@@ -45,6 +47,7 @@ app.use(session({
 }))
 app.use(cookieParser('Farah'));
 app.use(addLogger);
+app.use('/apidocs', serve, setup(specs));
 
 // SERVER
 const httpServer = app.listen(keys.PORT, console.log('Server arriba'))

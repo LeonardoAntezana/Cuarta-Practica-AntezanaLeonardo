@@ -1,0 +1,260 @@
+paths:
+  api/carts:
+    get:
+      summary: Obtiene todos los carritos
+      tags:
+        - Carts
+      responses:
+        200:
+          description: Obtiene todos los carritos exitosamente
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Cart"
+        400:
+          description: Error al obtener los carritos
+    post:
+      summary: Crea un carrito
+      tags:
+        - Carts
+      responses:
+        200:
+          description: Crea un carrito exitosamente
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Cart"
+        400:
+          description: Error al crear el carrito
+  api/carts/{cid}:
+    get:
+      summary: Obtiene los productos del carrito solicitado por "cid"
+      tags:
+        - Carts
+      parameters:
+        - name: cid
+          in: path
+          required: true
+          description: _id del carrito solicitado
+          schema:
+            type: string
+      responses:
+        200:
+          description: Obtiene los productos un carrito exitosamente
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Product"
+        400:
+          description: Error al obtener el carrito, _id no válido o inexistente
+
+    put:
+      summary: Actualiza los productos del carrito por array recibido
+      tags:
+        - Carts
+      parameters:
+        - name: cid
+          in: path
+          required: true
+          description: _id del carrito solicitado
+          schema:
+            type: string
+      requestBody:
+        description: Array de productos a actualizar
+        content:
+          application/json:
+            schema:
+              type: array
+              items:
+                $ref: "#/components/schemas/Product"
+      responses:
+        200:
+          description: Actualiza los productos del carrito exitosamente
+        400:
+          description: Error al actualizar los productos del carrito, _id no válido o inexistente, productos no válidos
+
+    delete:
+      summary: Elimina todos los productos del carrito
+      tags:
+        - Carts
+      parameters:
+        - name: cid
+          in: path
+          required: true
+          description: _id del carrito solicitado
+          schema:
+            type: string
+      responses:
+        200:
+          description: Elimina todos los productos del carrito exitosamente
+        400:
+          description: Error al eliminar los productos del carrito
+  api/carts/{cid}/purchase:
+    post:
+      summary: Realiza la compra del carrito y crea un ticket de compra asociado con el user que lo compro
+      tags:
+        - Carts
+      parameters:
+        - name: cid
+          in: path
+          required: true
+          description: _id del carrito solicitado
+          schema:
+            type: string
+      requestBody:
+        description: Email del usuario que realiza la compra
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/requestBodies/userEmail"
+      responses:
+        200:
+          description: Realiza la compra del carrito exitosamente
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Ticket"
+        400:
+          description: Error al realizar la compra
+
+  api/carts/{cid}/products/{pid}:
+    post:
+      summary: Agrega un producto "pid" a un carrito especificado por "cid"
+      tags:
+        - Carts
+      parameters:
+        - name: cid
+          in: path
+          required: true
+          description: _id del carrito solicitado
+          schema:
+            type: string
+        - name: pid
+          in: path
+          required: true
+          description: _id del producto solicitado
+          schema:
+            type: string
+      responses:
+        200:
+          description: Agrega un producto "pid" a un carrito exitosamente
+        400:
+          description: Error al agregar el producto
+    delete:
+      summary: Elimina un producto "pid" de un carrito especificado por "cid"
+      tags:
+        - Carts
+      parameters:
+        - name: cid
+          in: path
+          required: true
+          description: _id del carrito solicitado
+          schema:
+            type: string
+        - name: pid
+          in: path
+          required: true
+          description: _id del producto solicitado
+          schema:
+            type: string
+      responses:
+        200:
+          description: Elimina un producto "pid" de un carrito exitosamente
+        400:
+          description: Error al eliminar el producto
+    put:
+      summary: Actualiza la cantidad de un producto "pid" de un carrito especificado por "cid"
+      tags:
+        - Carts
+      parameters:
+        - name: cid
+          in: path
+          required: true
+          description: _id del carrito solicitado
+          schema:
+            type: string
+        - name: pid
+          in: path
+          required: true
+          description: _id del producto solicitado
+          schema:
+            type: string
+      requestBody:
+        description: Cantidad a actualizar del producto especificado
+        content:
+          application/json:
+            schema:
+              type: number
+      responses:
+        200:
+          description: Actualiza la cantidad de un producto "pid" de un carrito exitosamente
+        400:
+          description: Error al actualizar la cantidad, producto no válido o carrito no válido
+
+components:
+  schemas:
+    Product:
+      type: object
+      properties:
+        _id:
+          type: string
+          description: _id autogenerado por mongodb
+        title:
+          type: string
+          description: nombre del producto
+        description:
+          type: string
+          description: descripción del producto
+        code: 
+          type: string
+          description: código unico del producto
+        price:
+          type: number
+        status:
+          type: boolean
+          description: estado del producto
+        category:
+          type: string
+          description: categoria del producto
+        owner:
+          type: string
+          description: email del sujeto que crea el producto
+    Cart:
+      type: object
+      properties:
+        _id:
+          type: string
+          description: _id generado por MongoDB
+        products:
+          type: array
+          items:
+            $ref: "#/components/schemas/Product"
+      example:
+        _id: ObjectId("4342gdfg98sd7as78sas")
+        products: []
+    Ticket:
+      type: object
+      properties:
+        _id: 
+          type: string
+          description: _id generado por MongoDB
+        code:
+          type: string
+          description: Código unico del ticket
+        purchase_datetime:
+          type: datetime
+          description: Fecha y hora de la compra
+        amount:
+          type: number
+          description: Monto total de la compra
+        purchase_user:
+          $ref: "#/components/requestBodies/userEmail" 
+  requestBodies:
+    userEmail:
+      type: string
+      description: Email del usuario que actua sobre el carrito
+      example: 3fWtM@example.com
