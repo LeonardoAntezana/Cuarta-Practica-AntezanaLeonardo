@@ -1,6 +1,6 @@
 import { Router } from "express";
 import CartController from "../controllers/cart.controller.js";
-import { checkAuthorization } from "../utils.js";
+import { checkAuthorization, decodeToken } from "../utils.js";
 
 const router = Router();
 
@@ -17,18 +17,18 @@ router.get('/:cid', CartController.getOneCart);
 router.post('/:cid/purchase', CartController.buyCart);
 
 // AGREGAR UN PRODUCTO ESPECIFICO A UN CARRITO ESPECIFICO
-router.post('/:cid/products/:pid',checkAuthorization(['admin']), CartController.addProductToCart);
+router.post('/:cid/products/:pid', decodeToken, checkAuthorization(['admin']), CartController.addProductToCart);
 
 // ELIMINAR UN PRODUCTO DE UN CARRITO
-router.delete('/:cid/products/:pid',checkAuthorization(['admin']), CartController.deleteProductToCart);
+router.delete('/:cid/products/:pid', decodeToken, checkAuthorization(['admin']), CartController.deleteProductToCart);
 
 // ELIMINAR PRODUCTOS DEL CARRITO
-router.delete('/:cid', CartController.deleteAllProductsToCart);
+router.delete('/:cid', decodeToken, checkAuthorization(['admin']), CartController.deleteAllProductsToCart);
 
 // SETEAR PRODUCTS DE CARRITO CON NUEVO ARRAY
-router.put('/:cid', CartController.setProductsToCart);
+router.put('/:cid', decodeToken, checkAuthorization(['admin']), CartController.setProductsToCart);
 
 // SETEAR NUEVA QUANTITY DE UN PRODUCTO DEL CARRITO
-router.put('/:cid/products/:pid', CartController.updateQuantityProduct);
+router.put('/:cid/products/:pid', decodeToken, checkAuthorization(['admin']), CartController.updateQuantityProduct);
 
 export default router;

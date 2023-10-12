@@ -76,7 +76,7 @@ class CartController {
   // ADD PRODUCT TO CART
   addProductToCart = async (req, res) => {
     const { cid, pid } = req.params;
-    const { email } = req.session.user;
+    const { email } = req.user;
     const cartFind = await cartRepository.getOneCart(cid);
     const prodFind = await productRepository.findProduct(pid);
     if (!cartFind || cartFind === 'CastError') {

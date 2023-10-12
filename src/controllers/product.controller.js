@@ -61,8 +61,9 @@ class ProductController {
       });
       return next(error);
     }
+    const findProduct = await productRepository.findProductByCode(code);
+    if (findProduct) return sendError(res, 400, 'Product already exists');
     let statusRes = await productRepository.addProduct({ title, description, code, price, status, stock, category, owner });
-    if (statusRes.code = enumErrors.CODE_EXISTS) return sendError(res, 400, 'Product already exists');
     //socketServer.emit('addProduct', { title, description, code, price, status, stock, category })    
     sendPayload(res, 200, statusRes);
   }
@@ -71,7 +72,7 @@ class ProductController {
   updateProduct = async (req, res) => {
     const { pid } = req.params;
     const { id, ...rest } = req.body;
-    const { role, email } = req.session.user;
+    const { role, email } = req.user;
     let productFind = await productRepository.findProduct(pid);
     if (role === 'premium' && email !== productFind.owner) return sendError(res, 403, 'You cannot delete this product');
     let resUpdateProduct = await productRepository.updateProduct(pid, rest);
@@ -82,7 +83,7 @@ class ProductController {
   // DELETE PRODUCT
   deleteProduct = async (req, res) => {
     const { pid } = req.params;
-    const { role, email } = req.session.user;
+    const { role, email } = req.user;
     let productFind = await productRepository.findProduct(pid);
     if (!productFind || productFind === 'CastError') return sendError(res, 400, 'Product not found');
     if (role === 'premium' && email !== productFind.owner) return sendError(res, 403, 'You cannot delete this product');

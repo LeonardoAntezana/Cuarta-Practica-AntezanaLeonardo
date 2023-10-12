@@ -1,6 +1,7 @@
 import { Router } from "express";
 import { passportAuth } from "../config/passport.utilities.js";
 import authController from "../controllers/auth.controller.js";
+import { sendPayload } from "../utils.js";
 
 const router = Router();
 
@@ -19,7 +20,7 @@ router.post('/login', passportAuth('login', { failureRedirect: '/login' }), auth
 // STRATEGY JWT
 
 router.get('/current', passportAuth('current', { session: false }), (req, res) => {
-  res.send({ payload: req.user })
+  sendPayload(res, 200, req.user)
 })
 
 // LOG0UT

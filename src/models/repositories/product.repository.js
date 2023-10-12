@@ -11,6 +11,8 @@ class ProductRepository {
 
   findProduct = async (id) => await this.dao.findProduct(id);
 
+  findProductByCode = async (code) => await this.dao.findProductByCode(code);
+
   addProduct = async (product) => await this.dao.addProduct(product);
 
   updateProduct = async (id, newProps) => await this.dao.updateProduct(id, newProps);

@@ -29,6 +29,15 @@ export default class ProductDao {
     }
   }
 
+  findProductByCode = async (code) => {
+    try {
+      let prod = await productModel.findOne({ code }).lean();
+      return prod;
+    } catch (error) {
+      return error.name;
+    }
+  }
+
   addProduct = async (product) => {
     try {
       let responseCreate = await productModel.create(product)
