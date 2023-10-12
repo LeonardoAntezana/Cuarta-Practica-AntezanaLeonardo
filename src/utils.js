@@ -17,8 +17,17 @@ export const sendPayload = (res, statusCode, payload) => res.status(statusCode).
 // MIDDLEWARES DE AUTENTICACION
 
 export const checkAuthorization = (rolesNotAcepted = []) => (req, res, next) => {
-  if(!req.session.user || rolesNotAcepted.includes(req.session.user.role)) return sendError(res, 403, 'No tienes permisos para realizar esta accion');
+  if(rolesNotAcepted.includes(req.user.role)) return sendError(res, 403, 'No tienes permisos para realizar esta accion');
   next(); 
+}
+
+export const decodeToken = (req, res, next) => {
+  let token = req.cookies['authCookie'];
+  jwt.verify(token, 'Farah', (err, decoded) => {
+    if(err) return sendError(res, 403, 'No tienes autenticacion activa');
+    req.user = decoded;
+    next();
+  })
 }
 
 export const checkSession = (req, res, next) => {

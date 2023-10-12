@@ -1,4 +1,5 @@
 import { config } from 'dotenv';
+import { testMode } from './config.command.js';
 
 // ADD VARIABLES
 config({
@@ -7,7 +8,7 @@ config({
 
 export default {
   PORT: process.env.PORT,
-  MONGO_URL: process.env.MONGO_URL,
+  MONGO_URL: testMode ? process.env.MONGO_URL_TEST : process.env.MONGO_URL,
   ADMIN_EMAIL: process.env.ADMIN_EMAIL,
   ADMIN_PASSWORD: process.env.ADMIN_PASSWORD,
   CLIENT_ID: process.env.CLIENT_ID,
