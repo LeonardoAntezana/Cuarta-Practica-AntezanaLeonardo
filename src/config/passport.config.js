@@ -54,12 +54,12 @@ const initializePassport = () => {
   passport.use('register', new LocalStrategy(
     { passReqToCallback: true, usernameField: 'email' }, async (req, username, password, done) => {
       try {
-        let { first_name, last_name, email, age } = req.body;
-        if (!first_name || !last_name || !email || !age) return done(null, false);
+        let { first_name, last_name, email, age, role = 'user' } = req.body;
+        if (!first_name || !last_name || !email || !age || !password || !role) return done(null, false);
         let user = await userRepository.getOneUser({ email: username });
         if (user) return done(null, false);
         let { _id } = await cartRepository.createCart();
-        let auxUser = { first_name, last_name, email, age, password: generateHash(password), cart: _id };
+        let auxUser = { first_name, last_name, email, age, password: generateHash(password), cart: _id, role };
         let response = await userRepository.createUser(auxUser);
         done(null, response)
       } catch (error) {
