@@ -19,7 +19,17 @@ const userSchema = Schema({
     type: String,
     enum: ['admin', 'user', 'premium'],
     default: 'user'
-  }
+  },
+  documents: [
+    {
+      name: String,
+      reference: String
+    }
+  ],
+  last_connection: {
+    type: Date,
+    required: true
+  },
 })
 
 export const userModel = model(userCollection, userSchema);

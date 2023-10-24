@@ -38,4 +38,22 @@ export default class UserDao {
     }
   }
 
+  updateLastConnection = async (uid) => {
+    try {
+      let response = await userModel.updateOne({ _id: uid }, { last_connection: new Date() });
+      return response;
+    } catch (error) {
+      return error;
+    }
+  }
+
+  updateDocuments = async (uid, arrayDocuments) => {
+    try {
+      let response = await userModel.updateOne({ _id: uid }, { $addToSet: { documents: { $each: arrayDocuments } } });
+      return response;
+    } catch (error) {
+      return error;
+    }
+  }
+
 }

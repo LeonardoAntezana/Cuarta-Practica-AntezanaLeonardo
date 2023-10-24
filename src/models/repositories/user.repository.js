@@ -13,6 +13,10 @@ class UserRepository {
 
   updateRole = async (uid, newRole) => await this.dao.updateRole(uid, newRole);
 
+  updateLastConnection = async (uid) => await this.dao.updateLastConnection(uid);
+
+  updateDocuments = async (uid, arrayDocuments) => await this.dao.updateDocuments(uid, arrayDocuments);
+
 }
 
 export default new UserRepository();
