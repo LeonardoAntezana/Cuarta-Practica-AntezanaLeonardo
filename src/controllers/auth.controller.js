@@ -1,9 +1,12 @@
 import { sendPayload, sendError, generateToken } from "../utils.js";
+import userRepository from "../models/repositories/user.repository.js";
 
 class AuthController {
 
-  githubCallback = (req, res) => {
+  githubCallback = async (req, res) => {
     let { first_name, last_name, role, cart, email } = req.user;
+    const userResponse = await userRepository.getOneUser({ email });
+    if (userResponse) await userRepository.updateLastConnection(userResponse._id);
     req.session.user = { name: `${first_name} ${last_name || ''}`, role, cart, email };
     let token = generateToken({ first_name, last_name, role }, '10h');
     res.cookie('authCookie', token, { httpOnly: true });
@@ -14,9 +17,11 @@ class AuthController {
     sendPayload(res, 200, 'User registed');
   }
 
-  login = (req, res) => {
+  login = async (req, res) => {
     try {
       let { first_name, last_name, role, cart, email } = req.user;
+      const userResponse = await userRepository.getOneUser({ email });
+      if (userResponse) await userRepository.updateLastConnection(userResponse._id);
       req.session.user = { name: `${first_name} ${last_name || ''}`, role, cart, email };
       let token = generateToken({ ...req.session.user }, '10h');
       res.cookie('authCookie', token, { httpOnly: true });
@@ -27,13 +32,19 @@ class AuthController {
     }
   }
 
-  logout = (req, res) => {
-    req.session.destroy(err => {
-      if (err) return sendError(res, 400, err);
-    });
-    res.clearCookie('connect.sid')
-    res.clearCookie('authCookie')
-    res.redirect('/login')
+  logout = async (req, res) => {
+    try {
+      req.session.destroy(err => {
+        if (err) return sendError(res, 400, err);
+      });
+      const userResponse = await userRepository.getOneUser({ email: req.user.email });
+      if (userResponse) await userRepository.updateLastConnection(userResponse._id);
+      res.clearCookie('connect.sid')
+      res.clearCookie('authCookie')
+      res.redirect('/login')
+    } catch (error) {
+      sendError(res, 400, error);
+    }
   }
 
 }
