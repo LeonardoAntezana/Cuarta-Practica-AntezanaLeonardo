@@ -12,9 +12,11 @@ form.addEventListener('submit', async event => {
       method: 'POST',
       body: JSON.stringify(obj),
       headers: { 'Content-Type': 'application/json' }
-    })
-    if(response.status === 200) { window.location.replace('/products') }
+    }).then(res => res.json())
+    if(response.payload === 'Admin logeado') window.location.replace('/admin')
+    if(response.payload === 'Usuario logeado') window.location.replace('/products')
+    else alert(response.error)
   } catch (error) {
-    console.log(error);    
+    console.log(error)    
   }
 })

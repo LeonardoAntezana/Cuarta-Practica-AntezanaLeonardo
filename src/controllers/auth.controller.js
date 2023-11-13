@@ -28,14 +28,16 @@ class AuthController {
       if (role === 'admin') return sendPayload(res, 200, 'Admin logeado')
       sendPayload(res, 200, 'Usuario logeado')
     } catch (error) {
-      sendError(res, 400, error);
+      sendError(res, 400, error.message);
     }
   }
 
   logout = async (req, res) => {
     try {
-      const userResponse = await userRepository.getOneUser({ email: req.user.email });
-      if (userResponse) await userRepository.updateLastConnection(userResponse._id);
+      if(req.user.role !== 'admin'){
+        let userResponse = await userRepository.getOneUser({ email: req.user.email });
+        if (userResponse) await userRepository.updateLastConnection(userResponse._id);
+      }
       res.clearCookie('authCookie')
       res.redirect('/login')
     } catch (error) {
