@@ -1,6 +1,9 @@
 <div class="container container__products">
   <h1 class="title">Bienvenido, {{user.name}}</h1>
   <p>Rol: {{user.role}} </p>
+  <div class="container__icon" onclick="getCartProducts('{{user.cart}}')">
+    <img src="https://cdn-icons-png.flaticon.com/512/263/263142.png" alt="icon-cart" class="icon__cart">
+  </div>
   <div>
     {{#if payload.hasPrevPage}}
     <a href={{payload.prevLink}}>Pagina anterior</a>
@@ -14,7 +17,7 @@
     <div class="product">
       <span class="name">{{this.title}}</span>
       <span class="price">${{this.price}}</span>
-      <button class="btn__add" onclick="buyProduct('{{../user.cart}}','{{this.id}}')">agregar al carrito</button>
+      <button class="btn__add" onclick="buyProduct('{{../user.cart}}','{{this.id}}','{{this.title}}')">agregar al carrito</button>
     </div>
     {{/each}}
   </div>
@@ -22,4 +25,5 @@
   <br><br>
   <button id="logout">Cerrar sesion</button>
 </div>
-<script src="/js/products.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+<script src="js/products.js"></script>

@@ -11,6 +11,22 @@
   text-align: center;
 }
 
+.container__icon{
+  position: fixed;
+  right: 6rem;
+  top: 10rem;
+  width: 5rem;
+  height: 5rem;
+  background-color: #fff;
+  border-radius: 50%;
+  padding: 1rem;
+}
+
+.icon__cart {
+  height: 100%;
+  width: 100%;
+}
+
 .container .container__products {
   width: 100%;
   max-width: 70%;

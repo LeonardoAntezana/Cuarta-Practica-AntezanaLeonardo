@@ -13,7 +13,10 @@ form.addEventListener('submit', async event => {
       body: JSON.stringify(obj),
       headers: { 'Content-Type': 'application/json' }
     });
-    if (status === 200) window.location.replace('/login')
+    if (status === 200){
+      window.location.replace('/login');
+      alert('Registro exitoso');
+    }
   } catch (error) {
     console.log(error);  
   }
