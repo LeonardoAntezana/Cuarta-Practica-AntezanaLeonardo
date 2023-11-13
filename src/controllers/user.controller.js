@@ -1,9 +1,15 @@
 import userRepository from "../models/repositories/user.repository.js";
 import ManagerMailer from "../config/nodemailer/config.nodemailer.js";
-import { sendPayload, sendError, isValidPassword, generateHash, objectFilesToArray } from "../utils.js";
-import multer from "multer";
+import { sendPayload, sendError, isValidPassword, generateHash } from "../utils.js";
+import { userFormat, checkLastConnection } from "./utils/utils.controller.js";
 
 class UserController {
+
+  getAll = async (_req, res) => {
+    let users = await userRepository.getAll();
+    let usersFormatted = users.map(userFormat);
+    sendPayload(res, 200, usersFormatted);
+  }
 
   updatePassword = async (req, res) => {
     const { password } = req.body;
@@ -61,9 +67,34 @@ class UserController {
       let path = destination.split('/');
       return { name: originalname, reference: `/public/img/${path[path.length - 1]}/${originalname}` }
     });
-    console.log(formatFiles)
-    // const response = await userRepository.updateDocuments(uid, formatFiles);
+    await userRepository.updateDocuments(uid, formatFiles);
     sendPayload(res, 200, 'Documentos actualizados');
+  }
+
+  deleteUser = async (req, res) => {
+    const { uid } = req.params;
+    if (!uid) return sendError(res, 400, 'parametro uid es requerido');
+    let user = await userRepository.getOneUser({ _id: uid });
+    if (!user) return sendError(res, 400, 'Usuario no encontrado');
+    await userRepository.deleteUser({ _id: uid });
+    sendPayload(res, 200, 'Usuario eliminado');
+  }
+
+  deleteAll = async (_req, res) => {
+    let actualDate = new Date(), diferenceDays = 2;
+    let users = await userRepository.getAll();
+    if (users.length === 0) return sendPayload(res, 200, 'No hay usuarios para eliminar');
+    users.forEach(async ({ email, last_connection }) => {
+      if (checkLastConnection(last_connection, actualDate, diferenceDays)) {
+        await userRepository.deleteUser({ email });
+        let mailer = ManagerMailer.getInstance();
+        await mailer.sendEmail({
+          to: email,
+          subject: 'Se ha eliminado su cuenta por motivo de inactividad',
+        });
+      }
+    })
+    sendPayload(res, 200, 'Cuentas eliminadas');
   }
 
 }

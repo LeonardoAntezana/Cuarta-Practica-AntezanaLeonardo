@@ -2,6 +2,7 @@ import productRepository from '../models/repositories/product.repository.js'
 import { sendError, sendPayload } from "../utils.js";
 import enumErrors from '../errors/enum.errors.js';
 import CustomError from '../errors/customError.js';
+import ManagerMailer from '../config/nodemailer/config.nodemailer.js';
 import { sendErrorInfo } from '../errors/product.errorInfo.js';
 
 class ProductController {
@@ -87,6 +88,13 @@ class ProductController {
     let productFind = await productRepository.findProduct(pid);
     if (!productFind || productFind === 'CastError') return sendError(res, 400, 'Product not found');
     if (role === 'premium' && email !== productFind.owner) return sendError(res, 403, 'You cannot delete this product');
+    if(productFind.owner !== 'admin'){
+      let mailer = ManagerMailer.getInstance();
+      mailer.sendMail({
+        to: productFind.owner,
+        subject: `El producto con el codigo ${productFind.code} ha sido eliminado`,
+      })
+    }
     await productsInstance.deleteProduct(pid);
     // socketServer.emit('deleteProduct', productFind.code)
     sendPayload(res, 200, 'Product deleted successfully');

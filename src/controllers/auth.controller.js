@@ -22,8 +22,8 @@ class AuthController {
       let { first_name, last_name, role, cart, email } = req.user;
       const userResponse = await userRepository.getOneUser({ email });
       if (userResponse) await userRepository.updateLastConnection(userResponse._id);
-      req.session.user = { name: `${first_name} ${last_name || ''}`, role, cart, email };
-      let token = generateToken({ ...req.session.user }, '10h');
+      let userAux = { name: `${first_name} ${last_name || ''}`, role, cart, email };
+      let token = generateToken(userAux, '10h');
       res.cookie('authCookie', token, { httpOnly: true });
       if (role === 'admin') return sendPayload(res, 200, 'Admin logeado')
       sendPayload(res, 200, 'Usuario logeado')
@@ -34,12 +34,8 @@ class AuthController {
 
   logout = async (req, res) => {
     try {
-      req.session.destroy(err => {
-        if (err) return sendError(res, 400, err);
-      });
       const userResponse = await userRepository.getOneUser({ email: req.user.email });
       if (userResponse) await userRepository.updateLastConnection(userResponse._id);
-      res.clearCookie('connect.sid')
       res.clearCookie('authCookie')
       res.redirect('/login')
     } catch (error) {

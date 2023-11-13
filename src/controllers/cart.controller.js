@@ -1,6 +1,8 @@
 import cartRepository from '../models/repositories/cart.repository.js';
 import productRepository from '../models/repositories/product.repository.js';
 import ticketRepository from '../models/repositories/ticket.repository.js'
+import ManagerMailer from '../config/nodemailer/config.nodemailer.js';
+import { ticketInfo } from './utils/utils.controller.js';
 import { sendError, sendPayload, generateUUID } from '../utils.js';
 
 class CartController {
@@ -43,6 +45,11 @@ class CartController {
     await cartRepository.setProductsToCart(cid, productsNotBought);
     let amount = productsToBuy.reduce((acc, prod) => acc + prod.product.price * prod.quantity, 0);
     let ticketResponse = await ticketRepository.create({ code:generateUUID(), purchase_datetime: new Date(), amount, purchase_user: email });
+    await ManagerMailer.getInstance().sendEmail({
+      to: email,
+      subject: 'Ticket de compra',
+      html: `<p>${ticketInfo(ticketResponse)}</p>`,
+    })
     sendPayload(res, 200, ticketResponse);
   }
 
