@@ -7,7 +7,11 @@ class UserRepository {
 
   getOneUser = async (filter) => await this.dao.getOneUser(filter);
 
+  getAll = async () => await this.dao.getAll();
+
   createUser = async (newUser) => await this.dao.createUser(newUser);
+
+  deleteUser = async (filter) => await this.dao.deleteUser(filter);
 
   updatePassWord = async (email, newPassword) => await this.dao.updatePassWord(email, newPassword);
 

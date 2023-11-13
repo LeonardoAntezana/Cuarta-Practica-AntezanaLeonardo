@@ -54,14 +54,14 @@ const initializePassport = () => {
   passport.use('register', new LocalStrategy(
     { passReqToCallback: true, usernameField: 'email' }, async (req, username, password, done) => {
       try {
-        let { first_name, last_name, email, age, role = 'user' } = req.body;
-        if (!first_name || !last_name || !email || !age || !password || !role) return done(null, false);
+        let { first_name, last_name, age, role = 'user' } = req.body;
+        if (!first_name || !last_name || !username || !age || !password) return done(null, false, 'Campos incompletos');
         let user = await userRepository.getOneUser({ email: username });
-        if (user) return done(null, false);
+        if (user) return done(null, false, 'El usuario ya existe');
         let { _id } = await cartRepository.createCart();
-        let auxUser = { first_name, last_name, email, age, password: generateHash(password), cart: _id, role };
-        let response = await userRepository.createUser(auxUser);
-        done(null, response)
+        let auxUser = { first_name, last_name, email: username, age, password: generateHash(password), cart: _id, role };
+        await userRepository.createUser(auxUser);
+        done(null, true)
       } catch (error) {
         return done(error);
       }

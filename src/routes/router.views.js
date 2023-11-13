@@ -1,6 +1,6 @@
 import { Router } from "express";
 import { socketServer } from "../app.js";
-import { checkAuthorization, checkSession, checkCookie, sendError } from "../utils.js";
+import { checkAuthorization, checkSession, checkCookie, sendError, decodeToken } from "../utils.js";
 
 const router = Router();
 
@@ -8,7 +8,7 @@ router.get('/', async (req, res) => {
   res.redirect('/login');
 })
 
-router.get('/products', checkAuthorization('admin'), async (req, res) => {
+router.get('/products', decodeToken, checkAuthorization(['admin']), async (req, res) => {
   const { limit = 10 , page = 1, sort, category, status } = req.query;
   let querySort = sort ? `&sort=${sort}` : '';
   let queryCategory = category ? `&category=${category}` : '';
@@ -20,7 +20,7 @@ router.get('/products', checkAuthorization('admin'), async (req, res) => {
   res.render('products', {
     style: 'products.css',
     payload: response.payload,
-    user: req.session.user,
+    user: req.user,
   })
 })
 
@@ -44,7 +44,7 @@ router.get('/carts/:cid', async (req, res) => {
   }
 })
 
-router.get('/chat', checkAuthorization('admin'), async (req, res) => {
+router.get('/chat', checkAuthorization(['admin']), async (req, res) => {
   const messages = await fetch(`http://localhost:8080/api/chat`).then(res => res.json());
   res.render('chat', {
     style: 'chat.css',
@@ -73,6 +73,13 @@ router.get('/login', checkSession, (req, res) => {
 
 router.get('/profile', (req, res) => {
   res.render('profile', { style: 'user.css' })
+})
+
+// , checkAuthorization(['user', 'premium'])
+
+router.get('/admin', async (req, res) => {
+  let users = await fetch(`http://localhost:8080/api/user`).then(res => res.json());
+  res.render('admin', { style: 'admin.css', users })
 })
 
 export default router;

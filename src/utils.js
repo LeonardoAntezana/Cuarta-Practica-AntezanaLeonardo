@@ -31,7 +31,7 @@ export const decodeToken = (req, res, next) => {
 }
 
 export const checkSession = (req, res, next) => {
-  if(req.session.user) return res.redirect('/products');
+  if(req.user) return res.redirect('/products');
   next();
 }
 

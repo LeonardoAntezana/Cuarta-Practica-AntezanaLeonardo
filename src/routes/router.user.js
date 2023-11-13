@@ -4,6 +4,12 @@ import { uploader } from "../middlewares/multer.js";
 
 const router = Router();
 
+router.get('/', userController.getAll);
+
+router.delete('/:uid', userController.deleteUser);
+
+router.delete('/', userController.deleteAll);
+
 router.post('/sendemail', userController.sendEmail);
 
 router.post('/recoverpassword', userController.updatePassword);
@@ -11,7 +17,5 @@ router.post('/recoverpassword', userController.updatePassword);
 router.put('/premium/:uid', userController.updateRole);
 
 router.post('/:uid/documents', uploader.array('documents') , userController.updateDocuments);
-
-// router.post('/:uid/documents', uploader.fields([ { name: 'documents', maxCount: 3 }, { name: 'profiles', maxCount: 1 }, { name: 'products', maxCount: 3 } ]), userController.updateDocuments);
  
 export default router;

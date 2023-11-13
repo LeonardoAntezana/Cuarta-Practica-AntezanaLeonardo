@@ -20,15 +20,19 @@ const userSchema = Schema({
     enum: ['admin', 'user', 'premium'],
     default: 'user'
   },
-  documents: [
-    {
-      name: String,
-      reference: String
-    }
-  ],
+  documents: {
+    type: [
+      {
+        name: String,
+        reference: String
+      }
+    ],
+    default: [],
+  },
   last_connection: {
     type: Date,
-    required: true
+    required: true,
+    default: new Date()
   },
 })
 

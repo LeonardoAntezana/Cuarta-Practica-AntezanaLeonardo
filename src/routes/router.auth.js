@@ -1,7 +1,7 @@
 import { Router } from "express";
 import { passportAuth } from "../config/passport.utilities.js";
 import authController from "../controllers/auth.controller.js";
-import { sendPayload } from "../utils.js";
+import { decodeToken, sendPayload } from "../utils.js";
 
 const router = Router();
 
@@ -24,6 +24,6 @@ router.get('/current', passportAuth('current', { session: false }), (req, res) =
 })
 
 // LOG0UT
-router.get('/logout', authController.logout)
+router.get('/logout',decodeToken, authController.logout)
 
 export default router;

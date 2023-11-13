@@ -2,6 +2,15 @@ import { userModel } from '../../schemas/user.model.js'
 
 export default class UserDao {
 
+  getAll = async () => {
+    try {
+      let users = await userModel.find();
+      return users;
+    } catch (error) {
+      return error;
+    }
+  }
+
   getOneUser = async (filter) => {
     try {
       let user = await userModel.findOne({ ...filter });
@@ -14,6 +23,15 @@ export default class UserDao {
   createUser = async (newUser) => {
     try {
       let response = await userModel.create(newUser);
+      return response;
+    } catch (error) {
+      return error;
+    }
+  }
+
+  deleteUser = async (filter) => {
+    try {
+      let response = await userModel.deleteOne({ ...filter });
       return response;
     } catch (error) {
       return error;
