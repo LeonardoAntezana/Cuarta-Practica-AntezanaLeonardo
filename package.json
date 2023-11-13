@@ -5,6 +5,7 @@
   "main": "index.js",
   "type": "module",
   "scripts": {
+    "start": "node src/app.js",
     "test": "echo \"Error: no test specified\" && exit 1",
     "testing": "mocha test/auth/auth.test.js",
     "testing-product": "mocha test/product/product.test.js",

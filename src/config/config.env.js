@@ -7,7 +7,7 @@ config({
 })
 
 export default {
-  PORT: process.env.PORT,
+  PORT: process.env.PORT || 8080,
   MONGO_URL: testMode ? process.env.MONGO_URL_TEST : process.env.MONGO_URL,
   ADMIN_EMAIL: process.env.ADMIN_EMAIL,
   ADMIN_PASSWORD: process.env.ADMIN_PASSWORD,
