@@ -65,7 +65,6 @@ class ProductController {
     const findProduct = await productRepository.findProductByCode(code);
     if (findProduct) return sendError(res, 400, 'Product already exists');
     let statusRes = await productRepository.addProduct({ title, description, code, price, status, stock, category, owner });
-    //socketServer.emit('addProduct', { title, description, code, price, status, stock, category })    
     sendPayload(res, 200, statusRes);
   }
 
@@ -96,7 +95,6 @@ class ProductController {
       })
     }
     await productsInstance.deleteProduct(pid);
-    // socketServer.emit('deleteProduct', productFind.code)
     sendPayload(res, 200, 'Product deleted successfully');
   }
 

@@ -75,9 +75,7 @@ router.get('/profile', (req, res) => {
   res.render('profile', { style: 'user.css' })
 })
 
-// , checkAuthorization(['user', 'premium'])
-
-router.get('/admin', async (req, res) => {
+router.get('/admin', decodeToken,checkAuthorization(['user', 'premium']), async (req, res) => {
   let users = await fetch(`http://localhost:8080/api/user`).then(res => res.json());
   res.render('admin', { style: 'admin.css', users })
 })

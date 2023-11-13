@@ -1,7 +1,5 @@
 import express from 'express';
 import mongoose from 'mongoose';
-import MongoStore from 'connect-mongo';
-import session from 'express-session';
 import keys from './config/config.env.js';
 import cookieParser from 'cookie-parser';
 import passport from 'passport';
@@ -19,8 +17,6 @@ import viewRouter from './routes/router.views.js'
 import authRouter from './routes/router.auth.js'
 import chatRouter from './routes/router.chat.js'
 import userRouter from './routes/router.user.js'
-import mocksRouter from './routes/router.mock.js'
-import logsRouter from './routes/router.log.js'
 
 const app = express();
 
@@ -35,16 +31,6 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 initializePassport();
 app.use(passport.initialize());
-app.use(session({
-  store: MongoStore.create({
-    mongoUrl: keys.MONGO_URL,
-    mongoOptions: { useNewUrlParser: true, useUnifiedTopology: true },
-    ttl: 300
-  }),
-  secret: "Lucy",
-  resave: false,
-  saveUninitialized: false
-}))
 app.use(cookieParser('Farah'));
 app.use(addLogger);
 app.use('/apidocs', serve, setup(specs));
@@ -60,20 +46,9 @@ app.set('views', `${__dirname}/views`)
 app.set('view engine', 'handlebars');
 
 // ROUTERS
-app.use('/loggertest', logsRouter)
-app.use('/mockingproducts', mocksRouter)
 app.use('/', viewRouter)
 app.use('/api/products/', productsRouter);
 app.use('/api/carts/', cartRouter)
 app.use('/api/auth/', authRouter)
 app.use('/api/chat/', chatRouter)
 app.use('/api/user/', userRouter)
-
-// socketServer.on('connection', async (socket) => {
-
-//   socket.on('sendMessage', async (data) => {
-//     await messagesManager.addMessage(data);
-//     socketServer.emit('newMessage', data);
-//   })
-
-// })
